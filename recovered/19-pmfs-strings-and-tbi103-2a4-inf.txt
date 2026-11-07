@@ -1,0 +1,74 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome/pmfs; xxd PMFS_6k.rom | head -4; strings -n 5 PMFS_6k.rom | head -20; strings -n 5 PMFS_8k.rom | head -20; ls ../x_tbi103-2a4/WELCOME/UTILITIES/; cat ../x_tbi103-2a4/WIMPS/R/PMFS.inf ../x_tbi103-2a3/*.inf 2>/dev/null | head
+
+# Output
+00000000: 0000 004c 1e80 8211 0150 4d46 5300 3133  ...L.....PMFS.13
+00000010: 3600 2843 2931 3938 3620 504d 4600 48a9  6.(C)1986 PMF.H.
+00000020: 919d f00d 6820 5d81 48c9 27f0 21c9 07d0  ....h ].H.'.!...
+00000030: 2bda 5aa5 efc9 a3d0 0fa5 f0c9 f3d0 0920  +.Z............ 
+(C)1986 PMF
+DIGITAL
+JOYSTICK
+MOUSE
+POINTER
+TRACKERBALL
+SETPAL
+Bad number
+****)
+(`hhLV
+}{xvsqnligdb_]ZXUSPNKIFDA?<:7520-+
+~}|{yxwvtsrqonmljihgedcb`_^][ZYXVU
+0<?????3
+JPG,PMF
+(C)1986 PMF
+DIGITAL
+JOYSTICK
+MOUSE
+POINTER
+TRACKERBALL
+HSETPAL
+Bad number
+****)
+(`hhLL
+}{xvsqnligdb_]ZXUSPNKIFDA?<:7520-+
+~}|{yxwvtsrqonmljihgedcb`_^][ZYXVU
+0<?????3
+JPG,PMF
+Banel
+Banel.inf
+CharDes
+CharDes.inf
+copyrite
+copyrite.inf
+Envelop
+Envelop.inf
+estruc
+estruc.inf
+FIX
+FIX.inf
+FMP
+FMP.inf
+FMPSRC
+FMPSRC.inf
+FONTS
+FONTS.inf
+jay
+jay.inf
+NewPanel
+NewPanel.inf
+Panel
+Panel.inf
+Pfill
+Pfill.inf
+PFONT
+PFONT.inf
+Pstruc
+Pstruc.inf
+PMFS        FFFF8000 FFFF8000 00002000 03
+!BOOT       00000000 FFFFFFFF 0000002A 03
+!DEFSTAT    00006042 00006042 00000064 03
+!status     00006042 00006042 00000064 03
+CONVERT     00000E00 00000E00 00000556 09
+Loader      00000800 0000B82B 0000029A 03
+MASTER      FFFE3000 FFFE3000 00005000 03
+QLOADER     00000800 00000800 0000004F 03

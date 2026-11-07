@@ -1,0 +1,104 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; uvx oaknut-disc --help 2>&1 | head -40; cp "severnwolf/master compact welcome/"* .; uvx oaknut-disc ls welcome-master-compact.adm 2>&1 | head -60
+
+# Output
+Downloading pygments (1.2MiB)
+ Downloaded pygments
+Installed 26 packages in 46ms
+Usage: oaknut-disc [OPTIONS] COMMAND [ARGS]...
+
+  Work with Acorn DFS, ADFS, and AFS disc images.
+
+Options:
+  --version  Show the version and exit.
+  --debug    Re-raise DataError / ConfigurationError after printing them, so
+             the full Python traceback is visible. For development; users
+             should leave this off.
+  --help     Show this message and exit.
+
+Commands:
+  adfs                    ADFS administration (floppies and hard discs).
+  afs                     Acorn Level 3 File Server (AFS) administration.
+  cat                     Dump file contents to stdout as raw bytes.
+  chmod                   Set file access permissions (Acorn alias: *ACCESS).
+  compact                 Defragment a disc image, consolidating free space.
+  cp                      Copy file(s) or a tree within or between disc
+                          images.
+  create                  Create a new empty disc image.
+  describe-filesystem     Describe one recognised filesystem in detail.
+  describe-report         Describe a specific declared report.
+  describe-report-format  Describe a specific report output formatter.
+  dfs                     Acorn DFS / Watford DFS administration.
+  export                  Bulk-export entire image to a host directory.
+  find                    Find files matching a wildcard pattern.
+  for-each                Run a command for each file matching an inner-path
+                          pattern.
+  freemap                 Show the free-space map as a sector matrix.
+  gather                  Gather many disc images into one, each under its own
+                          directory.
+  get                     Export a file from the image to the host filesystem.
+  get-datestamp           Print a file's datestamp.
+  get-exec                Print a file's exec address.
+  get-filetype            Print a file's RISC OS filetype.
+  get-load                Print a file's load address.
+  identify                Identify a disc image's filesystem(s) by content,
+Traceback (most recent call last):
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/bin/oaknut-disc", line 12, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/click/core.py", line 1631, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/click/core.py", line 1552, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/disc/cli.py", line 109, in invoke
+    return super().invoke(ctx)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/click/core.py", line 2032, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/click/core.py", line 1415, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/click/core.py", line 910, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/asyoulikeit/cli.py", line 482, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/disc/cli.py", line 372, in ls
+    resolved = resolve_mount(
+               ^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/disc/mount.py", line 196, in resolve_mount
+    candidates = _identify_or_explain(outer_filepath, force_option)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/disc/mount.py", line 367, in _identify_or_explain
+    result = survey(outer_filepath)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/filesystem/coordinator.py", line 135, in survey
+    candidates, rejections = _probe_region(reader, active, reader.suffix)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/filesystem/coordinator.py", line 153, in _probe_region
+    identification = filesystem.probe(reader)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/filesystem.py", line 440, in probe
+    traverses = not adfs._directory_tree_errors()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2391, in _directory_tree_errors
+    return self._walk_directory_tree()[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2438, in _walk_directory_tree
+    walk(root, "$")
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2436, in walk
+    walk(subdir, child_path)
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2431, in walk
+    subdir = self._read_directory_at(address)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2693, in _read_directory_at
+    data = self._directory_sectors(disc_address)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/adfs/adfs.py", line 2703, in _directory_sectors
+    header = self._disc.sector_range(sector, 1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/discimage/unified_disc.py", line 84, in sector_range

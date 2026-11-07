@@ -1,0 +1,46 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome/pmfs; python3 -c "
+d=open('PMFS_6k.rom','rb').read(); print([hex(0x8000+i) for i in range(len(d)-1) if d[i]==0xB2 and d[i+1]==0x87])"; L=$SCRATCH/mosdis/dist/mos500.lst; ls -la $L; grep -n -i 'mouse' $L | head -40; grep -n -i 'adval\|osbyte &80\|osbyte 128' $L | head -30
+
+# Output
+[]
+-rw-r--r--@ 1 rjs  wheel  1402501 11 okt. 17:46 $SCRATCH/mosdis/dist/mos500.lst
+23949:8346	>e790	7f				                .byte $7F       ;  mouse right    5     b3      delete key
+23950:8347	>e791	0d				                .byte $D        ;  mouse middle   6     b2      return key
+23951:8348	>e792	8b				                .byte $8B       ;  mouse left     7     b1      copy key
+24015:8412						                                            ; Process the ADVAL 0 digital joystick directions / mouse buttons / fire buttons
+24090:8487						                    ; The Master Compact has a digital Joystick/Mouse port connected
+25542:10118						;           MOS 5.x:  Y = current channel, X = digital joystick/mouse byte
+25543:10119						;                     (b7=right, b6=up, b5=down, b4=left, b3-b1=mouse, b0=fire)
+25587:10199						                ; joystick direction buttons, three mouse buttons, and fire button
+25591:10203	.edda	ae b6 02	ldx $02b6	                ldx adcResultLSBs           ; X = adval0LSB : joystick, mouse and fire switch statuses
+3110:483	.81ad	8d 4e 02	sta $024e	                sta adcConversionType       ; control ADVAL ROM service call and simulated keypresses)
+23840:8237						; to process digital joystick inputs and simulate analogue ADVAL channels
+23846:8243						;   into smoothly varying 16-bit ADVAL channel values that simulate analogue
+23869:8266						;   pressed, the corresponding ADVAL channel immediately jumps to minimum
+23883:8280						;   the MOS command line editor. In this mode ADVAL(1) and ADVAL(2) will not
+23890:8287						; ADVAL CHANNEL ASSIGNMENTS:
+23891:8288						;   Channel 0 (adval0LSB): Switch state byte, bits 0-4 encode directions/buttons
+23910:8307						;   responds, joystick handling simply doesn't occur (ADVAL values remain unchanged).
+23917:8314						;   - Y register = page 2 offset for ADVAL workspace ($B6 = offset to $02B6)
+23931:8328						; buffer depending on the contents of ADVAL(0) lo-byte in page 2. (i.e. the
+23941:8338						;                Keyboard buffer   Switch         X  ADVAL(0)       Key
+23972:8369						; $02b6 - ADVAL channel 0 LSB
+23973:8370						; $02b7 - ADVAL channel 1 or 3 LSB
+23974:8371						; $02b8 - ADVAL channel 1 or 3 MSB
+23975:8372						; $02b9 - ADVAL channel 2 or 4 LSB
+23976:8373						; $02ba - ADVAL channel 2 or 4 MSB
+23984:8381	=$2b6					adval0LSB   = adcResultLSBs          ; $02b6
+23985:8382	=695					adval1LSB   = adcResultLSBs + 1      ; $02b7
+23986:8383	=696					adval1MSB   = adcResultLSBs + 2      ; $02b8
+23987:8384	=697					adval2LSB   = adcResultLSBs + 3      ; $02b9
+23988:8385	=698					adval2MSB   = adcResultLSBs + 4      ; $02ba  also adcResultMSB
+23989:8386	=699					advalIncLSB = adcResultLSBs + 5      ; $02bb  also adcResultMSB + 1
+23990:8387	=700					advalIncMSB = adcResultLSBs + 6      ; $02bc  also adcResultMSB + 2
+23991:8388	=701					advalTemp   = adcResultLSBs + 7      ; $02bd  also adcResultMSB + 3
+23993:8390						; The advalTemp entry of the workspace is used for several variables
+23995:8392	=701					keyDelay = advalTemp
+23996:8393	=701					joystickRepeatCounter = advalTemp
+24011:8408	.e7a3	ad b6 02	lda $02b6	                lda adval0LSB                       ; A = adval0LSB (offset in page 2)
+24014:8411	.e7a8					scanSwitchBitsLoop:                         ; Loop that finds the first set bit in adval0LSB
+24015:8412						                                            ; Process the ADVAL 0 digital joystick directions / mouse buttons / fire buttons

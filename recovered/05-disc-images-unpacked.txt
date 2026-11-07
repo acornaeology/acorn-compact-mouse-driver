@@ -1,0 +1,28 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; mv att120568.bin tbi103-2a.zip; mv att121857.bin master_compact_welcome.zip; mkdir -p tbi severnwolf; unzip -o -q tbi103-2a.zip -d tbi; unzip -o -q master_compact_welcome.zip -d severnwolf; find tbi severnwolf -type f | head -50; python3 -c "
+import re,html
+t=open('thread2.html').read()
+for m in re.finditer(r'<div class=\"content\">(.*?)</div>\s*(?:<dl|<div id=\"sig|<div class=\"notice)',t,re.S):
+  s=re.sub(r'<[^>]+>','',m.group(1)); print(html.unescape(s)[:1500]); print('=====')
+"
+
+# Output
+tbi/tbi103-2.adl
+tbi/tbi103-2-prodest-128s.adl
+tbi/tbi103-2a4.adl
+tbi/tbi103-2a3.adl
+severnwolf/master compact welcome/watford-master-compact.adl
+severnwolf/master compact welcome/welcome-master-compact.adm
+No worries. It’s useful to know that best way to do a “proper” archive. 
+
+Here’s the Watford disc
+
+			
+				
+			
+					
+		
+		
+		
+			
+=====

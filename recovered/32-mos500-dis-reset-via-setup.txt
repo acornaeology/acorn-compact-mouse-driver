@@ -1,0 +1,78 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+L=$SCRATCH/mosdis/dist/mos500.lst; sed -n 24495,24526p $L | cut -c1-150; sed -n 3125,3175p $L | cut -c1-150 | grep -v '^\s*[0-9]*\s*$'
+
+# Output
+8933	.e9ef	a2 03		ldx #$03	                ldx #$03
+8934	.e9f1	20 ce ea	jsr $eace	                jsr LE9A3
+8935	.e9f4	b0 08		bcs $e9fe	                bcs LE8D3
+8936	.e9f6	2c d1 02	bit $02d1	                bit bufferEmptyFlags+bufferPrinter
+8937	.e9f9	10 03		bpl $e9fe	                bpl LE8D3
+8938	.e9fb	20 00 ea	jsr $ea00	                jsr LE8D5
+8939	.e9fe					LE8D3:
+8940	.e9fe	28		plp		                plp
+8941	.e9ff					LE8D4:
+8942	.e9ff	60		rts		                rts
+
+8944	.ea00					LE8D5:                                       ;E7CA in MOS 4.00
+8945	.ea00	ad 85 02	lda $0285	                lda printerDriverType
+8947	.ea03	f0 7f		beq $ea84	                beq LE959
+8948	.ea05	3a		dec a		                dec a
+8949	.ea06	d0 20		bne $ea28	                bne LE8FD
+8950	.ea08	20 1f eb	jsr $eb1f	                jsr osbyte91
+8951	.ea0b	6e d1 02	ror $02d1	                ror bufferEmptyFlags+bufferPrinter
+8952	.ea0e	30 43		bmi $ea53	                bmi rtsE928
+8953	.ea10	a0 82		ldy #$82	                ldy #$82
+8954	.ea12	8c 6e fe	sty $fe6e	                sty userVIA.ier
+8955	.ea15	8d 61 fe	sta $fe61	                sta userVIA.ora
+8956	.ea18	ad 6c fe	lda $fe6c	                lda userVIA.pcr
+8957	.ea1b	29 f1		and #$f1	                and #$F1
+8958	.ea1d	09 0c		ora #$0c	                ora #$0C
+8959	.ea1f	8d 6c fe	sta $fe6c	                sta userVIA.pcr
+8960	.ea22	09 0e		ora #$0e	                ora #$0E
+8961	.ea24	8d 6c fe	sta $fe6c	                sta userVIA.pcr
+8962	.ea27	60		rts		                rts
+
+8964	.ea28					LE8FD:
+8965	.ea28	3a		dec a		                dec a
+503	.81cc	9c 78 02	stz $0278	                stz rs423InterruptMask
+504	.81cf					L81CF:
+505	.81cf	ca		dex		                dex
+506	.81d0	d0 e0		bne $81b2	                bne L81B2
+507	.81d2	20 9b ad	jsr $ad9b	                jsr resetACIAThenRewriteControlRegister
+508	.81d5	e8		inx		                inx
+512	.81d6	a9 7f		lda #$7f	                lda #$7F
+513	.81d8					initializeVIAInterruptsLoop:
+514	.81d8	9d 4d fe	sta $fe4d,x	                sta systemVIA.ifr,x
+515	.81db	9d 6d fe	sta $fe6d,x	                sta userVIA.ifr,x
+516	.81de	ca		dex		                dex
+517	.81df	10 f7		bpl $81d8	                bpl initializeVIAInterruptsLoop
+520						                ; Let through 1 IRQ.
+521	.81e1	58		cli		                cli
+522	.81e2	78		sei		                sei
+524						                ; TEMPA was cleared above, so if bit 6 is set, there
+525						                ; must have been an IRQ (as A=$7f).
+526	.81e3	24 fc		bit $fc		                bit TEMPA
+527	.81e5	50 03		bvc $81ea	                bvc +
+528	.81e7	20 48 f7	jsr $f748	                jsr call1MHzBusHook
+529	.81ea					+
+533	.81ea	a2 d2		ldx #$d2	                ldx #$80|VIA.irq.t1|VIA.irq.cb1|VIA.irq.ca1
+537	.81ec	8e 4e fe	stx $fe4e	                stx systemVIA.ier
+540	.81ef	a2 98		ldx #$98	                ldx #$80|VIA.irq.cb1|VIA.irq.cb2
+541	.81f1	8e 6e fe	stx $fe6e	                stx userVIA.ier
+544	.81f4	a2 04		ldx #$04	                ldx #VIA.pcr.cb2InputNegativeActiveEdge|VIA.pcr.cb1NegativeActiveEdge|VIA.pcr.ca2InputPositiveEdge|VIA.pcr.c
+545	.81f6	8e 4c fe	stx $fe4c	                stx systemVIA.pcr
+546	.81f9	a9 40		lda #$40	                lda #VIA.acr.t1Continuous|VIA.acr.t2Timer|VIA.acr.srDisabled|VIA.acr.pbLatchDisabled|VIA.acr.paLatchDisabled
+547	.81fb	8d 4b fe	sta $fe4b	                sta systemVIA.acr
+548	.81fe	a9 0e		lda #$0e	                lda #$0E
+549	.8200	8d 46 fe	sta $fe46	                sta systemVIA.t1lL
+550	.8203	8d 6c fe	sta $fe6c	                sta userVIA.pcr              ;VIA.pcr.cb2InputNegativeActiveEdge|VIA.pcr.cb1NegativeActiveEdge|VIA.pcr.ca
+556	.8206	a9 27		lda #$27	                lda #$27
+557	.8208	8d 47 fe	sta $fe47	                sta systemVIA.t1lH
+558	.820b	8d 45 fe	sta $fe45	                sta systemVIA.t1cH
+561	.820e	20 6d 83	jsr $836d	                jsr clearAllSoundChannelBuffers
+574	.8211	20 89 f7	jsr $f789	                jsr osbyte7A
+576	.8214	86 ed		stx $ed		                stx firstKeyPressedInternal
+577	.8216	a2 00		ldx #$00	                ldx #$00
+579	.8218	8e 62 fe	stx $fe62	                stx userVIA.ddrb
+581	.821b	20 a8 ea	jsr $eaa8	                jsr purgeBuffer
+584	.821e	ad 82 02	lda $0282	                lda serialULARegister

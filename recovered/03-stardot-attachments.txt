@@ -1,0 +1,12 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; grep -o 'file.php?id=12[01][0-9]*">[^<]*' thread.html; grep -c 'start=' thread.html; grep -o 'viewtopic.php?t=33348&amp;start=[0-9]*' thread.html | sort -u
+
+# Output
+file.php?id=120567">Level 3 FS Utilities Disc v106.dsd
+file.php?id=120568">tbi103-2a.zip
+file.php?id=120792">master_welcome_rel1_mw03.adl.zip
+file.php?id=120793">master_welcome_rel2_mw02.adl.zip
+file.php?id=120794">master_welcome_rel3_mw01.adl.zip
+file.php?id=121857">master compact welcome.zip
+4
+viewtopic.php?t=33348&amp;start=30

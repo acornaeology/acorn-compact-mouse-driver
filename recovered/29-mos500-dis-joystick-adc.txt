@@ -1,0 +1,181 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+L=$SCRATCH/mosdis/dist/mos500.lst; sed -n 23835,23960p $L | cut -c1-160; sed -n 24080,24130p $L | cut -c1-160
+
+# Output
+8232						;-------------------------------------------------------------------------
+
+8234						; Digital joystick input processing
+8235						;
+8236						; The handleDigitalJoystick  routine below is called every centisecond (100Hz)
+8237						; to process digital joystick inputs and simulate analogue ADVAL channels
+8238						; 1 and 2. It supports multiple operating modes configured via *CONFIGURE
+8239						; and *FX commands:
+8240						;
+8241						; PROPORTIONAL MODE (*CONFIGURE PROPORTIONAL or *FX190,<rate 0-7>):
+8242						;   Uses an integration algorithm to convert instantaneous digital switch states
+8243						;   into smoothly varying 16-bit ADVAL channel values that simulate analogue
+8244						;   joystick deflection. The algorithm implements linear acceleration with
+8245						;   velocity limiting:
+8246						;
+8247						;   - Each polling tick increments a counter (joystickRepeatCounter) while a
+8248						;     direction is held
+8249						;   - The channel value increment is calculated as: counter * 2^rate
+8250						;   - This produces quadratic growth: deflection increases as the square of time
+8251						;   - When the increment's MSB exceeds the configured rate value, velocity
+8252						;     limiting activates
+8253						;   - Limited velocity equals rate * 256, producing linear growth thereafter
+8254						;   - When input is released, the joystickRepeatCounter resets and the channel
+8255						;     coasts or holds at its current value, so further joystick input is
+8256						;     required to return to the centre value.
+8257						;
+8258						;   The rate (0-7) is configured via *CONFIGURE STICK <rate> and controls
+8259						;   responsiveness: Rate 7 reaches full deflection in ~0.32 s, Rate 1 in ~2.56 s.
+8260						;   Rate 0 is special, and causes the effective rate to be 3. Rate values above
+8261						;   7 are clamped to 7. Also set by *FX190, <rate 0-7> which implicitly enters
+8262						;   proportional mode.
+8263						;
+8264						; SWITCHED MODE (*CONFIGURE SWITCHED or *FX190,32):
+8265						;   Provides instant positioning without acceleration. When a direction is
+8266						;   pressed, the corresponding ADVAL channel immediately jumps to minimum
+8267						;   ($0000), maximum ($FFFF) depending on the switch state.
+8268						;   When released, channels return immediately to center ($7FFF).
+8269						;
+8270						; Keyboard simulating joystick (*FX4, 3):
+8271						;   The cursor keys (up/down/left/right) and COPY key can be mapped to simulate
+8272						;   digital joystick inputs. The routine scans these keys via KEYV and combines
+8273						;   them with hardware joystick inputs - either joystick or keys can be used
+8274						;   simultaneously. This allows keyboard control of joystick-driven software.
+8275						;
+8276						; Joystick simulating keyboard (*FX190, 64):
+8277						;   When bit 6 of adcConversionType is set, the routine reverses the mapping:
+8278						;   joystick directions are converted to cursor key equivalents and fire buttons
+8279						;   to COPY key. This allows joystick control of keyboard-driven software like
+8280						;   the MOS command line editor. In this mode ADVAL(1) and ADVAL(2) will not
+8281						;   reflect the state of the â<80><9C>joystickâ<80><9D> position.
+8282						;
+8283						; INPUT SOURCES:
+8284						;   - Hardware joystick: User VIA Port B ($FE60), bits 0-4, active-low
+8285						;   - Keyboard: KEYV vector for cursor keys and COPY, returns C=1 when pressed
+8286						;
+8287						; ADVAL CHANNEL ASSIGNMENTS:
+8288						;   Channel 0 (adval0LSB): Switch state byte, bits 0-4 encode directions/buttons
+8289						;   Channel 1: Horizontal axis ($0000=right, $7FFF=center, $FFFF=left)
+8290						;   Channel 2: Vertical axis ($0000=down, $7FFF=center, $FFFF=up)
+8291						;   ...
+8292						;   Channel <odd> : equivalent to channel 1
+8293						;   Channel <even> : equivalent to channel 2
+8294						;
+8295						;   NOTE: The horizontal axis sense is INVERTED compared to both screen coordinates
+8296						;   and standard mathematical conventions (where increasing X moves right). Here,
+8297						;   increasing values move LEFT.
+8298						;
+8299						; ROM SERVICE CALL DELEGATION:
+8300						;   When bit 7 of adcConversionType is set, joystick handling is completely
+8301						;   delegated to sideways ROMs via service call $2C (romServiceCallCompactJoystick).
+8302						;   This is a tail call in dispatchRomServiceCallOrJoykeys bypasses ALL built-in
+8303						;   joystick handling - no keyboard-simulating-joystick, no proportional mode,
+8304						;   no switched mode, and no joystick-simulating-keyboard will run.
+8305						;
+8306						;   This happens REGARDLESS of whether any ROM claims the service call. If no ROM
+8307						;   responds, joystick handling simply doesn't occur (ADVAL values remain unchanged).
+8308						;
+8309						;   To enable ROM delegation: *FX190,128,127 (sets bit 7, preserves other bits)
+8310						;   Default value is loaded from CMOS at boot; no *CONFIGURE setting exists.
+8311						;
+8312						;   ROMs implementing service call $2C receive:
+8313						;   - A register = service call number ($2C)
+8314						;   - Y register = page 2 offset for ADVAL workspace ($B6 = offset to $02B6)
+8315						;   - Should write joystick data to $0200+Y through $0200+Y+4 (5 bytes)
+8316						;   - Return X=0 to claim (stops service call chain)
+8317						;   - Return A unchanged to pass to next lower-priority ROM
+8318						;
+8319						;   Use case: Hardware expansions (real analogue joystick interfaces) can
+8320						;   completely replace the built-in digital joystick support.
+8321						;
+8322						;   This is an either/or choice:
+8323						;   - Bit 7 clear = built-in handling (modes described above)
+8324						;   - Bit 7 set = ROM-only handling (built-in code skipped entirely)
+8325						;
+
+8327						; The switchToKey table is used to enter ASCII key values into the keyboard
+8328						; buffer depending on the contents of ADVAL(0) lo-byte in page 2. (i.e. the
+8329						; contents of the address $0200 + adcResultLSBs). The X register value used to
+8330						; index into this table will represent the bit index according to b = 8 - X
+8331						;
+8332						; Note that each byte is a keyboard buffer input value, subject to subsequent
+8333						; translation by the mechanisms of *FX4, OSRDCH/INKEY which is why some of the
+8334						; values are ASCII (delete and return) whereas others, like the edit keys are
+8335						; are neither their ASCII, INKEY nor internal key codes (though are deceptively
+8336						; close in value!)
+
+8338						;                Keyboard buffer   Switch         X  ADVAL(0)       Key
+8339						;                input values                          bit    equivalent
+
+8341	>e78b	00				switchToKey:    .byte 0         ;                 0     n/a
+8342	>e78c	8d				                .byte $8D       ;  joystick right 1     b7      cursor right
+8343	>e78d	8f				                .byte $8F       ;  joystick up    2     b6      cursor up
+8344	>e78e	8e				                .byte $8E       ;  joystick down  3     b5      cursor down
+8345	>e78f	8c				                .byte $8C       ;  joystick left  4     b4      cursor left
+8346	>e790	7f				                .byte $7F       ;  mouse right    5     b3      delete key
+8347	>e791	0d				                .byte $D        ;  mouse middle   6     b2      return key
+8348	>e792	8b				                .byte $8B       ;  mouse left     7     b1      copy key
+8349	>e793	8b				                .byte $8B       ;  joystick fire  8     b0      copy key
+
+8351						; The joyKeys table is used to define the keys which have joystick-like effects,
+8352						; where the cursor keys move the joystick in the appropriate direction, and the
+8353						; copy key is equivalent to the fire button.
+
+8355	>e794	96				joyKeys:        .byte $96       ; INKEY copy
+8356	>e795	e6				                .byte $E6       ; INKEY cursor left
+8357	>e796	d6				                .byte $D6       ; INKEY cursor down
+8477	.e803	10 ef		bpl $e7f4	                bpl scanJoyKeysLoop     ; next joykey
+
+8479						                                        ; At this point A contains active-high key states 1 1 1 right up down left copy
+8480						                                        ; (top 3 bits are from original $FF, bottom 5 bits from key scans)
+
+8482	.e805	49 ff		eor #$ff	                eor #$FF                ; Invert to active-low key states 0 0 0 ~right ~up ~down ~left ~copy
+8483						                                        ; to match those from the joystick port
+
+8485	.e807					readJoystickPort:   ; Read Joystick port and combine with joykey results
+
+8487						                    ; The Master Compact has a digital Joystick/Mouse port connected
+8488						                    ; to User VIA port B through a 9 way D-type connector
+8489						                    ; PB0 - Fire  (active low)     - Pin 6
+8490						                    ; PB1 - Left  (active low)     - Pin 3
+8491						                    ; PB2 - Down  (active low)     - Pin 2
+8492						                    ; PB3 - Up    (active low)     - Pin 1
+8493						                    ; PB4 - Right (active low)     - Pin 4
+8494						                    ; CB1 - No joystick connection - Pin 5
+8495						                    ; CB2 - No joystick connection - Pin 9
+8496						                    ; +5V - Power                  - Pin 7
+8497						                    ; 0V  - Ground                 - Pin 9
+
+8499	.e807	2d 60 fe	and $fe60	                and userVIA.irb                 ; Combine keyboard (A) with joystick port (User VIA Input Register B) both active-
+8500						                                                ; AND of active-low signals = OR logic (De Morgan): result is 0 if either pressed
+8501	.e80a	49 1f		eor #$1f	                eor #$1F                        ; Invert the five lo bits b4-b0 to make A active high
+8502	.e80c	4a		lsr a		                lsr a                           ; Shift the 'fire' state into status flag C : A = 0 0 0 0 right up down left
+8503	.e80d	08		php		                php                             ; Save status (including C = fire)
+8504	.e80e	0a		asl a		                asl a                           ; A = 0 0 0 right up down left 0
+8505	.e80f	0a		asl a		                asl a                           ; A = 0 0 right up down left 0 0
+8506	.e810	0a		asl a		                asl a                           ; A = 0 right up down left 0 0 0
+8507	.e811	28		plp		                plp                             ; Restore status (including C = fire)
+8508	.e812	2a		rol a		                rol a                           ; A = right up down left 0 0 0 fire  - now same pattern as switchToKey table and ADVAL 0 l
+8509	.e813	aa		tax		                tax                             ; X = A
+8510	.e814	4d b6 02	eor $02b6	                eor adval0LSB                   ; A = changed joystick state bits, by xor with previous state
+8511	.e817	2c 4e 02	bit $024e	                bit adcConversionType           ;   If bit 6 of adcConversionType is ...
+8512	.e81a	29 f0		and #$f0	                and #$F0                        ; A = changed direction bits (b7-b4) (excludes changed fire state)
+8513	.e81c	8e b6 02	stx $02b6	                stx adval0LSB                   ; update adval0LSB to reflect joystick/joykey state (including fire state)
+8514	.e81f	70 05		bvs $e826	                bvs exitSwitchedMode            ;   ... set then exitSwitchedMode and the whole routine
+8515	.e821	f0 04		beq $e827	                beq calculateJoystickIncrement  ; If same state as previous, continue to calculating the joystick increment
+8516	.e823	9c bd 02	stz $02bd	                stz joystickRepeatCounter       ; Clear the key repeat counter
+
+8518	.e826					exitSwitchedMode:
+8519	.e826	60		rts		                rts                                     ; exit
+
+8521						;-------------------------------------------------------------------------
+8522						; Rate scaling. Converts adcConversionType to a valid rate (1-7), then calculates the increment in
+8523						; advalIncMSB:advalIncLSB = joystickRepeatCounter * 2^rate
+8524						; The effect is to give exponential sensitiviy scaling - higher rate settings produce much faster movement
+
+8526	.e827					calculateJoystickIncrement:                 ; Joystick state is unchanged since previous call
+8527	.e827	ad 4e 02	lda $024e	                lda adcConversionType       ; A = adcConversionType

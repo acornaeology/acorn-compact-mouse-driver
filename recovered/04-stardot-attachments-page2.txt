@@ -1,0 +1,13 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; curl -sL -A 'Mozilla/5.0' 'https://stardot.org.uk/forums/viewtopic.php?t=33348&start=30' -o thread2.html; grep -o 'file.php?id=[0-9]*">[^<]*' thread2.html; for id in 120568 121857; do curl -sL -A 'Mozilla/5.0' "https://stardot.org.uk/forums/download/file.php?id=$id" -o att$id.bin; done; file att*; ls -la
+
+# Output
+att120568.bin: Zip archive data, at least v2.0 to extract, compression method=deflate
+att121857.bin: Zip archive data, at least v2.0 to extract, compression method=store
+total 2496
+drwxr-xr-x@  6 rjs  wheel     192 14 okt. 21:28 .
+drwx------@ 28 rjs  wheel     896 14 okt. 21:28 ..
+-rw-r--r--@  1 rjs  wheel  756701 14 okt. 21:28 att120568.bin
+-rw-r--r--@  1 rjs  wheel  329300 14 okt. 21:28 att121857.bin
+-rw-r--r--@  1 rjs  wheel  148596 14 okt. 21:28 thread.html
+-rw-r--r--@  1 rjs  wheel   36396 14 okt. 21:28 thread2.html

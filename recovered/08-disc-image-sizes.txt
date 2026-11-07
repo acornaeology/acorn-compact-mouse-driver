@@ -1,0 +1,43 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; uvx oaknut-disc ls welcome-master-compact.adm 2>&1 | tail -3; ls -la *.adl *.adm tbi/; for f in watford-master-compact.adl tbi/*.adl; do echo "=== $f"; uvx oaknut-disc find "$f" '*' 2>&1 | head -100; done
+
+# Output
+  File "/Users/rjs/.cache/uv/archive-v0/23ShjncKJ_taYhqZmA7pF/lib/python3.11/site-packages/oaknut/discimage/unified_disc.py", line 84, in sector_range
+    raise ValueError(
+ValueError: Sector range [1325, 1326) exceeds disc bounds (0-1280)
+-rw-r--r--@ 1 rjs  wheel  655360 14 okt. 21:29 watford-master-compact.adl
+-rw-r--r--@ 1 rjs  wheel  327680 14 okt. 21:29 welcome-master-compact.adm
+
+tbi/:
+total 5120
+drwxr-xr-x@  6 rjs  wheel     192 14 okt. 21:28 .
+drwxr-xr-x@ 10 rjs  wheel     320 14 okt. 21:29 ..
+-rw-r--r--@  1 rjs  wheel  655360  4 sep.  2021 tbi103-2-prodest-128s.adl
+-rw-rw-rw-@  1 rjs  wheel  655360 12 mai   1997 tbi103-2.adl
+-rw-------@  1 rjs  wheel  655360 22 okt.  2001 tbi103-2a3.adl
+-rw-------@  1 rjs  wheel  655360  5 okt.  2001 tbi103-2a4.adl
+=== watford-master-compact.adl
+Usage: oaknut-disc find [OPTIONS] OUTER_PATH:INNER_PATH
+Try 'oaknut-disc find --help' for help.
+
+Error: Got unexpected extra argument (*)
+=== tbi/tbi103-2-prodest-128s.adl
+Usage: oaknut-disc find [OPTIONS] OUTER_PATH:INNER_PATH
+Try 'oaknut-disc find --help' for help.
+
+Error: Got unexpected extra argument (*)
+=== tbi/tbi103-2.adl
+Usage: oaknut-disc find [OPTIONS] OUTER_PATH:INNER_PATH
+Try 'oaknut-disc find --help' for help.
+
+Error: Got unexpected extra argument (*)
+=== tbi/tbi103-2a3.adl
+Usage: oaknut-disc find [OPTIONS] OUTER_PATH:INNER_PATH
+Try 'oaknut-disc find --help' for help.
+
+Error: Got unexpected extra argument (*)
+=== tbi/tbi103-2a4.adl
+Usage: oaknut-disc find [OPTIONS] OUTER_PATH:INNER_PATH
+Try 'oaknut-disc find --help' for help.
+
+Error: Got unexpected extra argument (*)

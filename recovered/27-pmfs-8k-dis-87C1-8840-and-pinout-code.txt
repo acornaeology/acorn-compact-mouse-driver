@@ -1,0 +1,121 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome/pmfs; awk '$1>="87C1" && $1<"8840"' PMFS_8k.lst; awk '$1>="8540" && $1<"8570"' PMFS_6k.lst; awk '$1>="8AB0" && $1<"8B90"' PMFS_8k.lst | grep -E 'ADC #|SBC #|CMP #|AND \$8|LDX #|8D 08|AND #'; xxd -s 0xB80 -l 0x20 PMFS_8k.rom
+
+# Output
+87C1  C9 80     CMP #$80
+87C3  F0 03     BEQ $87c8
+87C5  6C 97 0D  JMP ($0d97)
+87C8  E0 09     CPX #$09
+87CA  F0 21     BEQ $87ed
+87CC  B0 F7     BCS $87c5
+87CE  E0 05     CPX #$05
+87D0  90 F3     BCC $87c5
+87D2  08        PHP
+87D3  78        SEI
+87D4  20 61 85  JSR $8561
+87D7  8A        TXA
+87D8  0A        ASL A
+87D9  69 F6     ADC #$f6
+87DB  A8        TAY
+87DC  B9 00 90  LDA $9000,Y
+87DF  AA        TAX
+87E0  C8        INY
+87E1  B9 00 90  LDA $9000,Y
+87E4  A8        TAY
+87E5  20 61 85  JSR $8561
+87E8  28        PLP
+87E9  A9 80     LDA #$80
+87EB  B8        CLV
+87EC  60        RTS
+87ED  A0 00     LDY #$00
+87EF  AE 31 90  LDX $9031
+87F2  60        RTS
+87F3  08        PHP
+87F4  78        SEI
+87F5  20 61 85  JSR $8561
+87F8  AE 08 90  LDX $9008
+87FB  10 10     BPL $880d
+87FD  A2 00     LDX #$00
+87FF  AD 60 FE  LDA $fe60
+8802  29 E0     AND #$e0
+8804  C9 E0     CMP #$e0
+8806  F0 05     BEQ $880d
+8808  A2 07     LDX #$07
+880A  8E 08 90  STX $9008
+880D  AD 60 FE  LDA $fe60
+8810  E0 00     CPX #$00
+8812  F0 04     BEQ $8818
+8814  2A        ROL A
+8815  2A        ROL A
+8816  2A        ROL A
+8817  2A        ROL A
+8818  29 07     AND #$07
+881A  49 07     EOR #$07
+881C  AA        TAX
+881D  20 61 85  JSR $8561
+8820  28        PLP
+8821  A0 00     LDY #$00
+8823  F0 C4     BEQ $87e9
+8825  08        PHP
+8826  48        PHA
+8827  DA        PHX
+8828  5A        PHY
+8829  AD 6E FE  LDA $fe6e
+882C  29 18     AND #$18
+882E  F0 11     BEQ $8841
+8830  AD 6D FE  LDA $fe6d
+8833  29 18     AND #$18
+8835  F0 0A     BEQ $8841
+8837  20 72 8B  JSR $8b72
+883A  A8        TAY
+883B  20 C2 8A  JSR $8ac2
+883E  20 72 8B  JSR $8b72
+8542  8D 34 FE  STA $fe34
+8545  60        RTS
+8546  08        PHP
+8547  78        SEI
+8548  A2 0C     LDX #$0c
+854A  BD 22 90  LDA $9022,X
+854D  95 84     STA $84,X
+854F  CA        DEX
+8550  10 F8     BPL $854a
+8552  28        PLP
+8553  60        RTS
+8554  08        PHP
+8555  78        SEI
+8556  20 53 85  JSR $8553
+8559  A2 0C     LDX #$0c
+855B  B5 84     LDA $84,X
+855D  9D 22 90  STA $9022,X
+8560  CA        DEX
+8561  10 F8     BPL $855b
+8563  28        PLP
+8564  60        RTS
+8565  AD 20 90  LDA $9020
+8568  85 8E     STA $8e
+856A  AD 21 90  LDA $9021
+856D  85 8F     STA $8f
+856F  A4 F4     LDY $f4
+8AB2  A2 00     LDX #$00
+8ABD  A2 00     LDX #$00
+8ACA  A2 07     LDX #$07
+8ACF  29 18     AND #$18
+8AD1  C9 18     CMP #$18
+8AD5  A2 00     LDX #$00
+8ADB  29 10     AND #$10
+8AE2  3D 6A 8B  AND $8b6a,X
+8AEA  C9 04     CMP #$04
+8AF1  C9 FC     CMP #$fc
+8AF8  69 04     ADC #$04
+8B12  E9 04     SBC #$04
+8B1A  E9 00     SBC #$00
+8B20  29 08     AND #$08
+8B27  3D 69 8B  AND $8b69,X
+8B2F  C9 03     CMP #$03
+8B36  C9 FC     CMP #$fc
+8B3D  69 04     ADC #$04
+8B56  E9 04     SBC #$04
+8B5E  E9 00     SBC #$00
+8B7F  69 03     ADC #$03
+00000b80: 0385 85a9 4085 84a0 09be 0090 b184 9900  ....@...........
+00000b90: 908a 9184 8810 f268 8585 6885 8468 60a9  .......h..h..h`.

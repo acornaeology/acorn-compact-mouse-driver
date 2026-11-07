@@ -1,0 +1,114 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+L=$SCRATCH/mosdis/dist/mos500.lst; sed -n 25530,25640p $L | cut -c1-170
+
+# Output
+10106						;
+10107						; OSBYTE $80
+10108						;
+10109						; Read ADC channel
+10110						;
+10111						; On entry:
+10112						;   X = channel number
+10113						;
+10114						; On exit:
+10115						;
+10116						;   X = 0 : Returns channel status
+10117						;           MOS <=3.x: Y = last channel used, X[1:0] = fire buttons (active-high)
+10118						;           MOS 5.x:  Y = current channel, X = digital joystick/mouse byte
+10119						;                     (b7=right, b6=up, b5=down, b4=left, b3-b1=mouse, b0=fire)
+10120						;
+10121						;   X = 1-4 : Returns ADVAL conversion
+10122						;           MOS <=3.x: Returns ADVAL(X) in X(LSB):Y(MSB), range check X < 5
+10123						;           MOS 5.x:  Odd X â<86><92> ADVAL(1), Even X â<86><92> ADVAL(2), no range check
+
+10126	.edc5					osbyte80:
+
+10128	.edc5	30 e1		bmi $eda8	                bmi readBufferStatus        ; If negative ...
+10129	.edc7	f0 0e		beq $edd7	                beq readAdval0              ; If zero, ADVAL(0)
+
+10146						                ; On the Master Compact the digital joystick port is
+10147						                ; supported by MOS code in handleDigitalJoystick which
+10148						                ; converts switched joystick (or cursor/copy 'joykey'
+10149						                ; presses) into either full deflection or centre ADVAL
+10150						                ; values, or smoothly varying values produced by a time
+10151						                ; dependent integration algorithm which simulates an
+10152						                ; analogue joystick. The layout of the MOS 5.x ADC workspace
+10153						                ; at adcResultLSBs is very different to that of earlier
+10154						                ; MOS versions, and only supports two (simulated) analogue
+10155						                ; channels. MOS 5.x can also delegate to ROM service call $2C
+10156						                ; for alternative or supplementary behaviours such as supporting
+10157						                ; real analogue hardware, but still, only two channels are
+10158						                ; supported by this routine.
+
+10160						                                    ;  X is one of these values (no range check)
+10161						                                    ; Xin   1    2    3    4    5    6    7    8 ...
+10162	.edc9	e8		inx		                inx                 ; INX   2    3    4    5    6    7    8    9 ...
+10163	.edca	8a		txa		                txa
+10164	.edcb	29 01		and #$01	                and #1              ; &1    0    1    0    1    0    1    0    1 ...
+10165	.edcd	0a		asl a		                asl a               ; ASL   0    2    0    2    0    2    0    2 ...
+10166	.edce	aa		tax		                tax
+10167	.edcf	bc b8 02	ldy $02b8,x	                ldy adval1MSB,x     ; Y = MSB  (ADVAL(1) at X=0, ADVAL(2) at X=2)
+10168	.edd2	bd b7 02	lda $02b7,x	                lda adval1LSB,x     ; A = LSB  (ADVAL(1) at X=0, ADVAL(2) at X=2)
+10169	.edd5	aa		tax		                tax                 ; X = LSB
+
+10171						                                    ; LSB in X, MSB in Y
+10173	.edd6	60		rts		                rts
+
+10176						;-------------------------------------------------------------------------
+
+10179	.edd7					readAdval0:
+
+10198						                ; Put the current ADC channel into Y and the state of the four
+10199						                ; joystick direction buttons, three mouse buttons, and fire button
+10200						                ; into X
+
+10202	.edd7	ac 4c 02	ldy $024c	                ldy currentADCChannel       ; Y = currentADCChannel
+10203	.edda	ae b6 02	ldx $02b6	                ldx adcResultLSBs           ; X = adval0LSB : joystick, mouse and fire switch statuses
+
+10207	.eddd	60		rts		                rts
+
+10210						;-------------------------------------------------------------------------
+10211						;
+10212						; OSBYTE $70
+10213						;
+10214						; D.2-31
+10215						;
+10216	.edde					osbyte70:                       ;ed58
+10217	.edde	20 f6 ed	jsr $edf6	                jsr osbyte7071
+10218	.ede1	0a		asl a		                asl a
+10219	.ede2	f0 04		beq $ede8	                beq clearACCCCONE
+10220	.ede4					LED5E:
+10221	.ede4	0c 34 fe	tsb $fe34	                tsb ACCCON
+10222	.ede7	60		rts		                rts
+
+10224	.ede8					clearACCCCONE:
+10225	.ede8	a9 02		lda #$02	                lda #ACCCON.E
+10226	.edea					LED64:
+10227	.edea	1c 34 fe	trb $fe34	                trb ACCCON
+10228	.eded	60		rts		                rts
+
+10230						;-------------------------------------------------------------------------
+
+10232	.edee					osbyte71:                       ;ed68
+10233	.edee	20 f6 ed	jsr $edf6	                jsr osbyte7071
+10234	.edf1	d0 f1		bne $ede4	                bne LED5E
+10235	.edf3	1a		inc a		                inc a
+10236	.edf4	80 f4		bra $edea	                bra LED64
+
+10238						;-------------------------------------------------------------------------
+10239						;
+10240						; Handle OSBYTE $70 or OSBYTE $71
+10241						;
+10242						; Entry: A=$70 or $71
+10243						;
+10244	.edf6					osbyte7071:
+10245	.edf6	a8		tay		                tay
+10246	.edf7	8a		txa		                txa
+10248	.edf8	99 1a 02	sta $021a,y	                sta vduDriverMemory-$70,y
+10249	.edfb	d0 09		bne $ee06	                bne LED80
+10250	.edfd	a5 d0		lda $d0		                lda STATE
+10251	.edff	29 10		and #$10	                and #STATE.isShadowMode
+10252	.ee01	f0 06		beq $ee09	                beq LED83
+10253	.ee03					LED7D:
+10254	.ee03	a9 01		lda #$01	                lda #$01
+10255	.ee05	60		rts		                rts

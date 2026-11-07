@@ -1,0 +1,977 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; python3 -c "
+import re,html
+t=open('thread.html').read()
+for m in re.finditer(r'<div class=\"content\">(.*?)</div>\s*(?:<dl|<div id=\"sig|<div class=\"notice)',t,re.S):
+  s=re.sub(r'<a [^>]*href=\"([^\"]*)\"[^>]*>(.*?)</a>',r'[\2](\1)',m.group(1))
+  s=re.sub(r'<br ?/?>','\n',s); s=re.sub(r'<[^>]+>','',s); print(html.unescape(s)[:3000]); print('=====')
+"; grep -o 'attachbox.*' thread.html | head; grep -o 'pagination[^<]*' thread.html|head -3; grep -o '<a class="username[^>]*>[^<]*' thread.html | head -20
+
+# Output
+Does anybody have any real, physical Master Compact Welcome discs they could image for me with a Greaseweazle? Or let me borrow?
+
+
+
+I'm poking around the images available online. Those which are a zipped bunch of files lose the disc's Title which contains its release information. Some seem to have been via fileservers and/or RISC OS and picked up datestamps and filetypes (thereby losing original Load/Exec addresses, which tell their own stories). Some have user files on them (a set of Video titles in MODE 7, for example).
+
+
+
+So I'm looking for the truth! Captures of real discs (ones which might even include disc duplication metadata).
+
+
+
+Looking around the internet there seem to possibly be 4 different versions - but there may be more!:
+Welcome V1.02 Iss3
+Welcome 1.03C Iss4
+DFS2,25 and DFSimage in $.LIBRARY (title lost)
+Just DFSimage in $.LIBRARY (title lost)
+
+Ta muchly in advance.
+=====
+I suspect all their bits have gone to the Great Bitbucket in the Sky.
+
+
+
+When developing Arthur we were given a load of Master Compact Welcome discs to do backups with. Discs formatted OK, verfied. Copy data on, verified. Verify half an hour later - FAIL. The whole batch. We went down town and bought some decent discs.
+=====
+[acheton1984](./memberlist.php?mode=viewprofile&u=15162) wrote: [](./viewtopic.php?p=488957#p488957)Sat Jul 25, 2026 1:50 pm
+So I'm looking for the truth! Captures of real discs (ones which might even include disc duplication metadata).
+
+
+
+Looking around the internet there seem to possibly be 4 different versions - but there may be more!:
+Welcome V1.02 Iss3
+Welcome 1.03C Iss4
+DFS2,25 and DFSimage in $.LIBRARY (title lost)
+Just DFSimage in $.LIBRARY (title lost)
+
+Ta muchly in advance.
+
+
+Agree that many of the Welcome 'disk images' out there are unclean and have unknown origins. When I last went on a Welcome disk mission many years ago I think the only one I was certain of being untouched is what I included in the MAME bbcmc_flop.xml.
+=====
+[Pernod](./memberlist.php?mode=viewprofile&u=9593) wrote: [](./viewtopic.php?p=488960#p488960)Sat Jul 25, 2026 2:00 pm
+Agree that many of the Welcome 'disk images' out there are unclean and have unknown origins. When I last went on a Welcome disk mission many years ago I think the only one I was certain of being untouched is what I included in the MAME bbcmc_flop.xml.
+
+
+It was your comments that have inspired me to look.
+
+
+
+I have some real Master Welcome Discs which seem to slot into 3 versions depending on the version of DFS in $.LIBRARY.
+
+
+
+release 1: DFS2,25 (disc duplication in spring '86)
+
+release 2: DFS2,25 & DFS2,28 (disc duplication in autumn/winter '86)
+
+release 3: DFS2,29 (no metadata!)
+
+
+
+There are possibly 2 subtly different tape versions (I have a real cassette)
+
+
+
+At the moment, I'm seeing 4 possible Compact releases and the Prodest as an offshoot
+
+
+
+Addendum. The L4FS 'Support' discs contain Comp_Wel and Master_Wel subdirectories with are pretty much what they say + Econet (or somebody will say ANFS) utilities also in $.LIBRARY.
+
+
+
+EDIT2: but I have 67 images; tape, 40t, 80t, compact, prodest, L4FS. I'm afraid I've turned to the bogey man (LLM) for help in unpicking their over 5500 files.
+
+
+[SKS1](./memberlist.php?mode=viewprofile&u=12622) wrote: [](./viewtopic.php?p=488959#p488959)Sat Jul 25, 2026 1:57 pm
+Copy data on, verified. Verify half an hour later - FAIL. The whole batch. We went down town and bought some decent discs.
+
+
+Lawks! I don't think I've ever seen any on eBay (though, I've not looked too closely in the past).
+
+
+
+The 5.25" discs are surprisingly robust survivors, however.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																[](./memberlist.php?mode=viewprofile&u=9593)														
+								[Pernod](./memberlist.php?mode=viewprofile&u=9593)							
+
+									
+		Posts: 3793		Joined: Fri Jun 08, 2012 11:01 pm		
+		
+											Location: Croydon, UK
+							
+						
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=488972#p488972)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [Pernod](./memberlist.php?mode=viewprofile&u=9593) » Sat Jul 25, 2026 4:43 pm
+			
+			
+			
+			
+			
+			[acheton1984](./memberlist.php?mode=viewprofile&u=15162) wrote: [](./viewtopic.php?p=488961#p488961)Sat Jul 25, 2026 2:26 pm
+[Pernod](./memberlist.php?mode=viewprofile&u=9593) wrote: [](./viewtopic.php?p=488960#p488960)Sat Jul 25, 2026 2:00 pm
+Agree that many of the Welcome 'disk images' out there are unclean and have unknown origins. When I last went on a Welcome disk mission many years ago I think the only one I was certain of being untouched is what I included in the MAME bbcmc_flop.xml.
+
+
+It was your comments that have inspired me to look.
+
+
+It was 10 years ago I last looked at [viewtopic.php?t=11897](http
+=====
+Yeah. That's the one. But it seemed/seems like an interesting question to follow up on.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																[](./memberlist.php?mode=viewprofile&u=9053)														
+								[BeebMaster](./memberlist.php?mode=viewprofile&u=9053)							
+
+									
+		Posts: 8944		Joined: Sun Aug 02, 2009 5:59 pm		
+		
+																Location: Lost in the BeebVault!
+							
+							
+				Contact:
+				
+					
+						Contact BeebMaster
+					
+					
+						
+						
+																																								
+																	
+										Website									
+																	
+																					
+					
+				
+			
+				
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=488974#p488974)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [BeebMaster](./memberlist.php?mode=viewprofile&u=9053) » Sat Jul 25, 2026 5:33 pm
+			
+			
+			
+			
+			
+			I don't think I have one, or ever seen one.  Is the a picture anywhere of the original showing the label?  The one I use would have been generated from a disc image file many years ago in the days of FDC and Omniflop, probably from 8BS website.
+=====
+I have a Master Compact "Welcome, Application and Utilities" disc.
+
+
+
+Here's a PNG showing the disc and its label: [https://vectoreyes.github.io/MasterComp ... meDisc.png](https://vectoreyes.github.io/MasterCompactWelcomeDisc.png)
+
+
+
+And here's an SCP of the contents: [https://vectoreyes.github.io/MasterComp ... es_80T.scp](https://vectoreyes.github.io/MasterCompactWelcomeDisc_BothSides_80T.scp)
+
+
+
+I hope these are useful!
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																[](./memberlist.php?mode=viewprofile&u=9053)														
+								[BeebMaster](./memberlist.php?mode=viewprofile&u=9053)							
+
+									
+		Posts: 8944		Joined: Sun Aug 02, 2009 5:59 pm		
+		
+																Location: Lost in the BeebVault!
+							
+							
+				Contact:
+				
+					
+						Contact BeebMaster
+					
+					
+						
+						
+																																								
+																	
+										Website									
+																	
+																					
+					
+				
+			
+				
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=489021#p489021)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [BeebMaster](./memberlist.php?mode=viewprofile&u=9053) » Sun Jul 26, 2026 10:44 am
+			
+			
+			
+			
+			
+			Thanks, I've definitely never seen that disc before!  I would have thought they'd have used the "Compact" logo on it.
+=====
+[VectorEyes](./memberlist.php?mode=viewprofile&u=11399) wrote: [](./viewtopic.php?p=489005#p489005)Sat Jul 25, 2026 11:47 pm
+I have a Master Compact "Welcome, Application and Utilities" disc.
+
+
+Excellent, thanks very much. Like Beebmaster, I don't think I've ever seen the disc photo before!
+
+
+
+This disc's title is "Welcome 1.03C Iss4" which makes it a 'release 2' by my own release counting.
+
+
+
+One of the reasons for asking for the SCP was in case of hidden disc duplication data and a mastering date - sadly not present on this disc.
+
+
+
+If anybody has any more - especially now those with $.Library.DFS2,25 or DFSimage - please do share a copy if you can.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																			
+								[markusher](./memberlist.php?mode=viewprofile&u=11495)							
+
+									
+		Posts: 499		Joined: Tue Jul 17, 2018 10:55 am		
+		
+						
+						
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=490672#p490672)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [markusher](./memberlist.php?mode=viewprofile&u=11495) » Tue Aug 18, 2026 10:58 pm
+			
+			
+			
+			
+			
+			as an "aside", the Econet Welcome files from the Level3 file server installation are on this disc. They are slightly modified to work from Econet and include 
+
+
+
+10 REM New version of 'INTRO' from
+
+20 REM Welcome pack
+
+30 REM By John Coll & Andrew Gordon
+
+
+
+590 MODE7:FORI%=2TO3:PRINTTAB(3,I%)CHR$&8D"Welcome to the BBC Microcomputer":PRINTTAB(13,I%+3);CHR$&8D;"Econet System":NEXT
+
+
+
+in the Welcome file.
+
+
+
+			
+		
+		
+				
+			 [Level 3 FS Utilities Disc v106.dsd](./download/file.php?id=120567)
+						(400 KiB) Downloaded 9 times
+		
+		
+			
+=====
+Just to start adding images here for prosperity - here are four Master Compact Welcome Disc images 
+
+
+
+recovered from   [https://8bs.com/catalogue/tbi.htm](https://8bs.com/catalogue/tbi.htm)
+=====
+I've got an original working one. I'm away on holiday this week, but I'll dig it out when I'm back home. Happy to send you a Greaseweazel image.
+=====
+[SevernWolf](./memberlist.php?mode=viewprofile&u=14577) wrote: [](./viewtopic.php?p=491267#p491267)Fri Aug 28, 2026 12:17 pm. Happy to send you a Greaseweazel image.
+
+
+It would be even better to post it here for archival 
+=====
+Indeed ~ share and enjoy! I’m just trying to get my M128 Welcome discs sorted out to share. There aren’t any 40 track images online that I’ve found (if you fancy a subset of the full Master Welcome experience). But I’m so slow I’m afraid. So slow.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																[](./memberlist.php?mode=viewprofile&u=9053)														
+								[BeebMaster](./memberlist.php?mode=viewprofile&u=9053)							
+
+									
+		Posts: 8944		Joined: Sun Aug 02, 2009 5:59 pm		
+		
+																Location: Lost in the BeebVault!
+							
+							
+				Contact:
+				
+					
+						Contact BeebMaster
+					
+					
+						
+						
+																																								
+																	
+										Website									
+																	
+																					
+					
+				
+			
+				
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=491282#p491282)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [BeebMaster](./memberlist.php?mode=viewprofile&u=9053) » Fri Aug 28, 2026 4:02 pm
+			
+			
+			
+			
+			
+			That's interesting, because all M128 Welcome Discs would have started life in 40T configuration mode, so it's definitely worthwhile having the 40T side preserved.  I did actually make an image of the full thing (disc sectors only, none of this hi-fi, lo-fi, wi-fi wavy lines caper that everyone seems to like nowadays) as two separate images which I could successfully write back to a floppy disc to make an exact replica of the 40/80T original.
+=====
+The Master Welcome discs - conceptually - appear like a ADFS-L (80tDS) with an ADFS-S (40tSS) written over side 0 of the disc. The swapper simply swaps the free space map and root directory to reveal materials stored exclusively on the 80t or the 40t side.
+
+
+
+I suspect you could construct an ADFS-L image, with the 40t side copied to the first 40 tracks and then 40 blank tracks and then the 80 tracks of side 1 to make an “adl” that would work either way in an emulator. Possibly. Maybe.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																			
+								[acheton1984](./memberlist.php?mode=viewprofile&u=15162)							
+
+									
+		Posts: 708		Joined: Fri Apr 18, 2025 10:13 am		
+		
+											Location: NE Hampshire
+							
+						
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=491395#p491395)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [acheton1984](./memberlist.php?mode=viewprofile&u=15162) » Sun Aug 30, 2026 11:36 am
+			
+			
+			
+			
+			
+			With a bit of help from Claude and some python, I've created 3 frankendiscs to the format outlined previously.
+
+
+
+Each originated as a greaseweazle scan of a physical disc (mwnn is my catalogue number of the 7 master welcome discs I own) and each was converted to an ADL (640Kb) or ADS (160Kb) and then mashed together.
+
+
+
+The Master Welcome discs seem to fall into three releases, which you can tell by the version of DFS in $.LIBRARY of the 80t incarnation.
+DFS2,25 alone is release 1 (mastering dates are from spring '86)
+DFS2,25 and DFS2,28 makes release 2 (mastering dates are from late autumn '86)
+DFS2,29 is release 3 (no mastering dates)
+The release number are my own inventions.
+
+
+
+These ADFS disc images are in the frankenformat described in the previous post, and identify (in the disc title) as the 40T versions by default. CHAIN"WELCOME80" for the full experience.
+
+
+
+
+
+			
+		
+		
+				
+			 [master_welcome_rel1_mw03.adl.zip](./download/file.php?id=120792)
+						(149.56 KiB) Downloaded 5 times
+		
+		
+			
+
+			
+		
+		
+				
+			 [master_welcome_rel2_mw02.adl.zip](./download/file.php?id=120793)
+						(169.21 KiB) Downloaded 7 times
+		
+		
+			
+
+			
+		
+		
+				
+			 [master_welcome_rel3_mw01.adl.zip](./download/file.php?id=120794)
+						(168.28 KiB) Downloaded 4 times
+		
+		
+			
+
+
+
+I've not extensively validated these images: thy all mount, convert back and forth between 40 and 80 track in an emulator, and both $ and $.LIBRARY catalogue. So let me know if I've missed something. These might not work in a Gotek almost certainly won’t work if written directly to a real drive (unless you run the 40t side with the drive set to 80t)
+
+
+
+The call for images of Master Compact Welcome Discs remains (and any Winchester or ADFS Utilities discs, too)
+
+			
+			
+									
+						
+										
+						
+
+		
+
+=====
+I have 7 original BBC Master 128 Welcome Discs.
+
+
+
+3 are in 40T configuration and have 512 bytes free and the PRINTDRIVE directory.
+
+
+
+A fourth one is in 80T configuration but doesn't look to contain any surprises.
+
+
+
+The fifth & sixth ones have been modified by a previous user and look to be identical.  They both have a write protect sticker on and one of them is in a blue Beebug disc sleeve.  These are in 80T configuration and have the disc title "WELCOME 2" and an extra directory LANGUAGE which has two files, BASICED and SOCKET.  BASICED is the BASIC Editor ROM, but it doesn't work properly.  It identifies itself as "Mandala Editor V.0.100" in *ROMS.  At one point it crashed the machine completely and I had to turn it off.  I noticed that the load & exec addresses for the ROM image were 00008000 which suggested it originated in the second processor.  It works slightly better with the Tube on.  SOCKET is a ROM copier, it begins by printing (very slowly) a ROMs listing with ROM titles and asks which ROM you want to "slurp".  Then it attempts to save the ROM with a 7-character name based on the ROM title but gave a Disc write protected error because of the write protect sticker.
+
+
+
+The seventh is not in a paper jacket but instead in a clear grip-seal bag.  Possibly it had never been opened before.  It's quite a tight fit in the bag. This again is in 40T configuration and looks to be same as the other 3 40T ones.
+
+
+
+So unfortunately apart from the user modified curiosity, I don't think I've got anything exciting.
+=====
+Thanks very much for checking.
+
+
+
+Mine are a mix of 40t and 80t but I converted them all to hfe and then ran the converters so I ended up with copies of each trackedness of each disc.
+
+
+
+I’m not sure if there are distinguishing features in 40t mode, I tend to look at the DFS version on the 80t format
+
+
+
+The DO lists seem to suggest there could be 5 Comapct releases, 2 for the Prodest, and a 3.5” Master disc. Though how many were public or have survived is another question.
+
+
+
+It’s be nice to find a Compact disc with DFSimage and an intact disc title.
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																			
+								[acheton1984](./memberlist.php?mode=viewprofile&u=15162)							
+
+									
+		Posts: 708		Joined: Fri Apr 18, 2025 10:13 am		
+		
+											Location: NE Hampshire
+							
+						
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=492826#p492826)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [acheton1984](./memberlist.php?mode=viewprofile&u=15162) » Sat Sep 19, 2026 10:29 am
+			
+			
+			
+			
+			
+			[markusher](./memberlist.php?mode=viewprofile&u=11495) wrote: [](./viewtopic.php?p=490672#p490672)Tue Aug 18, 2026 10:58 pm
+as an "aside", the Econet Welcome files from the Level3 file server installation are on this disc. They are slightly modified to work from Econet and include 
+
+
+A belated many thanks for this. CHAINing "W.WELCOME" launches the noisy title screen:
+
+
+
+
+
+			
+				
+			[](./download/file.php?id=121382&mode=view)
+					
+		
+		
+		
+			
+
+
+
+It would appear similar to the 'BBC Disc System' disc* at [https://bbcmicro.co.uk/game.php?id=2874](https://bbcmicro.co.uk/game.php?id=2874)
+
+
+
+
+
+			
+				
+			[](./download/file.php?id=121383&mode=view)
+					
+		
+		
+		
+			
+
+
+
+And both report the same list of files with truncated names:
+
+
+
+
+
+			
+				
+			[](./download/file.php?id=121384&mode=view)
+					
+		
+		
+		
+			
+
+
+
+Two sides of the same coin and well worth investigating.
+
+
+
+* A disc of utilities, and a manual, it seems you wouldn't get if you bought an Acorn 8271 disc interface because you might use it with somebody else's disc drives! [https://chrisacorns.computinghistory.or ... torage.pdf](https://chrisacorns.computinghistory.org.uk/docs/Acorn/Brochures/Acorn_AMP03_BBCMicroDiscStorage.pdf)
+
+
+The disc drive is provided with the BBC Microcomputer Disc Filing System manual and a floppy disc containing formatting and utilities routines.
+
+
+
+The DFS manual is not supplied with the disc interface components as when used with other makes of disc drive correct operation cannot be guaranteed
+=====
+[acheton1984](./memberlist.php?mode=viewprofile&u=15162) wrote: [](./viewtopic.php?p=492826#p492826)Sat Sep 19, 2026 10:29 am
+The DFS manual is not supplied with the disc interface components
+
+
+And unwittingly, that's exactly what I have been doing for about the last 25 years!
+=====
+[BeebMaster](./memberlist.php?mode=viewprofile&u=9053) wrote: [](./viewtopic.php?p=491808#p491808)Fri Sep 04, 2026 9:10 pm
+BASICED is the BASIC Editor ROM, but it doesn't work properly.  It identifies itself as "Mandala Editor V.0.100" in *ROMS.  At one point it crashed the machine completely and I had to turn it off.  I noticed that the load & exec addresses for the ROM image were 00008000 which suggested it originated in the second processor.  It works slightly better with the Tube on.  
+
+
+That's interesting! Have you uploaded this anywhere? I'm always interested in looking at new versions of the BASIC Editor (no matter how bizarre!), in case there'd be anything relevant for my updated version.
+
+
+
+--Tom
+=====
+Keeping an eye on this topic, always fancied picking up a Master Compact
+=====
+Two versions of the Master Compact Welcome disc here. 
+
+
+
+An original 40T Acorn disc and a 80T Watford Electronics version (not sure if the latter is of interest).
+
+
+
+The Acorn one wasn't happy when I tried imaging it as Acorn.ADFS.640 so I had to assume 40T. If there's a better way to image it using Greaseweazle, please let me know.
+=====
+Thanks SevernWolf, I’ll take a look when I’m back at the Beebface.
+
+
+
+It’s possible to make a raw capture in greaseweazle with
+
+
+Code: [Select all](#)gw read --drive=0 image.scp
+
+That way you don’t need to worry about the format of the disc AND if there’s hidden mastering data on track 81, it’s captured too. For some of my M128 discs, the duplication dates are in the mastering data, which helps with understanding their chronology.
+
+
+
+PS: if possible, a photo of the disc (label) would be of interest too. Maybe they contain clues, maybe not …
+
+			
+			
+									
+						
+										
+						
+
+		
+
+				
+						
+				
+				Top
+			
+					
+		
+		
+	
+
+				
+		
+
+		
+			
+				
+																			
+								[SevernWolf](./memberlist.php?mode=viewprofile&u=14577)							
+
+									
+		Posts: 94		Joined: Sat Feb 17, 2024 8:06 am		
+		
+						
+						
+		
+
+		
+						
+
+					
+						[Re: Anyone Have any Real Master Compact Welcome Discs?](./viewtopic.php?p=493896#p493896)
+		
+
+													
+																																									
+							
+								Quote
+							
+						
+														
+							
+						
+									
+						Post
+					
+								by [SevernWolf](./memberlist.php?mode=viewprofile&u=14577) » Sat Oct 03, 2026 8:14 am
+			
+			
+			
+			
+			
+			I can't upload the SCP file, so I've put it in a Google drive temporarily.
+
+
+
+[https://drive.google.com/drive/folders/ ... sp=sharing](https://drive.google.com/drive/folders/1357C_wr0BcJLWbDEX58jCinkGdxFPYXW?usp=sharing)
+
+
+
+			
+				
+			[](./download/file.php?id=121866&mode=view)
+					
+		
+		
+		
+			
+=====
+attachbox">
+attachbox">
+pagination">
+pagination">

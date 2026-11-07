@@ -1,0 +1,253 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+cd $SCRATCH/compact-welcome; for d in x_*; do (cd $d; find . -type f ! -name '*.inf' | sort) > /tmp/../$PWD/list_$d.txt 2>/dev/null || (cd $d; find . -type f ! -name '*.inf'|sort) > list_$d.txt; done; ls list_*; for d in x_tbi103-2a3 x_tbi103-2a4 x_tbi103-2-prodest-128s x_welcome-adm; do echo "== $d vs tbi103-2"; diff list_x_tbi103-2.txt list_$d.txt; done
+
+# Output
+Exit code 1
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_tbi103-2.txt
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_tbi103-2-prodest-128s.txt
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_tbi103-2a3.txt
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_tbi103-2a4.txt
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_watford-master-compact.txt
+(eval):1: no such file or directory: /tmp/../$SCRATCH/compact-welcome/list_x_welcome-adm.txt
+list_x_tbi103-2-prodest-128s.txt
+list_x_tbi103-2.txt
+list_x_tbi103-2a3.txt
+list_x_tbi103-2a4.txt
+list_x_watford-master-compact.txt
+list_x_welcome-adm.txt
+== x_tbi103-2a3 vs tbi103-2
+14c14
+< ./ADFSUTILS/Menu
+---
+> ./ADFSUTILS/menu
+16d15
+< ./CMOSREAD
+18c17,18
+< ./DISC
+---
+> ./DATAFILES/index1
+> ./DATAFILES/Pad
+30,33d29
+< ./LIBRARY/DFS2,25
+< ./LIBRARY/DFSimage
+< ./LIBRARY/DISC
+< ./LIBRARY/DISK
+47,48c43
+< ./STATUS
+< ./WELCOME/APPLIC/grant1
+---
+> ./WELCOME/APPLIC/GRANT1
+67c62
+< ./WELCOME/TUTOR/ADFSTitle
+---
+> ./WELCOME/TUTOR/ADFSTITLE
+74c69
+< ./WELCOME/UTILITIES/Estruc
+---
+> ./WELCOME/UTILITIES/estruc
+80c75,76
+< ./WELCOME/UTILITIES/PFill
+---
+> ./WELCOME/UTILITIES/Panel
+> ./WELCOME/UTILITIES/Pfill
+84a81,82
+> ./WIMPS/P/makeprog
+> ./WIMPS/P/menumaker
+== x_tbi103-2a4 vs tbi103-2
+14c14
+< ./ADFSUTILS/Menu
+---
+> ./ADFSUTILS/menu
+16,18c16,17
+< ./CMOSREAD
+< ./CONVERT
+< ./DISC
+---
+> ./DATAFILES/index1
+> ./DATAFILES/Pad
+30,33d28
+< ./LIBRARY/DFS2,25
+< ./LIBRARY/DFSimage
+< ./LIBRARY/DISC
+< ./LIBRARY/DISK
+47,48c42,46
+< ./STATUS
+< ./WELCOME/APPLIC/grant1
+---
+> ./TEST
+> ./V2
+> ./VIDEO
+> ./WELCOME/APPLIC/circus
+> ./WELCOME/APPLIC/GRANT1
+67c65
+< ./WELCOME/TUTOR/ADFSTitle
+---
+> ./WELCOME/TUTOR/ADFSTITLE
+72a71
+> ./WELCOME/UTILITIES/copyrite
+74c73
+< ./WELCOME/UTILITIES/Estruc
+---
+> ./WELCOME/UTILITIES/estruc
+78a78
+> ./WELCOME/UTILITIES/jay
+80c80,81
+< ./WELCOME/UTILITIES/PFill
+---
+> ./WELCOME/UTILITIES/Panel
+> ./WELCOME/UTILITIES/Pfill
+84a86,87
+> ./WIMPS/P/makeprog
+> ./WIMPS/P/menumaker
+89a93
+> ./WIMPS/PAD2
+== x_tbi103-2-prodest-128s vs tbi103-2
+1a2
+> ./!CONVERT
+4,9d4
+< ./ABC/!BOOT
+< ./ABC/ABC
+< ./ABC/ABC1
+< ./ABC/ABC2
+< ./ABC/ABC3
+< ./ABC/INTER
+14c9
+< ./ADFSUTILS/Menu
+---
+> ./ADFSUTILS/menu
+16d10
+< ./CMOSREAD
+17a12,13
+> ./DATAFILES/index1
+> ./DATAFILES/Pad
+38d33
+< ./LIBRARY/LOGO
+40a36
+> ./LIBRARY/SHEET
+42c38,39
+< ./LIBRARY/view
+---
+> ./LIBRARY/View
+> ./LIBRARY/VSheet
+45c42
+< ./MASTER
+---
+> ./ProdEstScr
+47c44
+< ./STATUS
+---
+> ./WELCOME/APPLIC/ACCOUNT
+49,50d45
+< ./WELCOME/APPLIC/logotron/LOGOROM
+< ./WELCOME/APPLIC/logotron/uEpson
+53,55d47
+< ./WELCOME/APPLIC/Wordtxt
+< ./WELCOME/GAMES/Adventure/GAME
+< ./WELCOME/GAMES/Adventure/INSTRUCT
+58c50,51
+< ./WELCOME/GAMES/Arcade/BEEBOBJ
+---
+> ./WELCOME/GAMES/Arcade/beebobj
+> ./WELCOME/GAMES/Arcade/SERPENT
+74c67
+< ./WELCOME/UTILITIES/Estruc
+---
+> ./WELCOME/UTILITIES/ESTRUC
+84a78
+> ./WIMPS/P/menumaker
+== x_welcome-adm vs tbi103-2
+1,94d0
+< ./!BOOT
+< ./!DEFSTAT
+< ./!status
+< ./ABC/!BOOT
+< ./ABC/ABC
+< ./ABC/ABC1
+< ./ABC/ABC2
+< ./ABC/ABC3
+< ./ABC/INTER
+< ./ADFSUTILS/Catall
+< ./ADFSUTILS/Copyfiles
+< ./ADFSUTILS/Dircopy
+< ./ADFSUTILS/Exall
+< ./ADFSUTILS/Menu
+< ./ADFSUTILS/sdbackup
+< ./CMOSREAD
+< ./CONVERT
+< ./DISC
+< ./DRIVERS/FAC2
+< ./DRIVERS/FLO16
+< ./DRIVERS/FX4
+< ./DRIVERS/JP101
+< ./DRIVERS/JUKI4
+< ./LIBRARY/7by8
+< ./LIBRARY/Bas128
+< ./LIBRARY/BAS4
+< ./LIBRARY/BASIC4
+< ./LIBRARY/BasObj
+< ./LIBRARY/CountAll
+< ./LIBRARY/DFS2,25
+< ./LIBRARY/DFSimage
+< ./LIBRARY/DISC
+< ./LIBRARY/DISK
+< ./LIBRARY/FIX
+< ./LIBRARY/FMP
+< ./LIBRARY/FONTS
+< ./LIBRARY/Italic
+< ./LIBRARY/LOGO
+< ./LIBRARY/PFONT
+< ./LIBRARY/SDBACK
+< ./LIBRARY/thin
+< ./LIBRARY/view
+< ./LIBRARY/WORD
+< ./Loader
+< ./MASTER
+< ./QLOADER
+< ./STATUS
+< ./WELCOME/APPLIC/grant1
+< ./WELCOME/APPLIC/logotron/LOGOROM
+< ./WELCOME/APPLIC/logotron/uEpson
+< ./WELCOME/APPLIC/TimPaint
+< ./WELCOME/APPLIC/Tinstruc
+< ./WELCOME/APPLIC/Wordtxt
+< ./WELCOME/GAMES/Adventure/GAME
+< ./WELCOME/GAMES/Adventure/INSTRUCT
+< ./WELCOME/GAMES/Arcade/Aqua
+< ./WELCOME/GAMES/Arcade/Attack
+< ./WELCOME/GAMES/Arcade/BEEBOBJ
+< ./WELCOME/GRAPHICS/Castle
+< ./WELCOME/GRAPHICS/Cloud
+< ./WELCOME/GRAPHICS/Clown
+< ./WELCOME/GRAPHICS/Patterns
+< ./WELCOME/GRAPHICS/Shapes
+< ./WELCOME/Menu
+< ./WELCOME/TUTOR/ADFSData
+< ./WELCOME/TUTOR/ADFSDEMO
+< ./WELCOME/TUTOR/ADFSTitle
+< ./WELCOME/TUTOR/keyboard
+< ./WELCOME/TUTOR/Screens
+< ./WELCOME/TUTOR/TEXT
+< ./WELCOME/UTILITIES/Banel
+< ./WELCOME/UTILITIES/CharDes
+< ./WELCOME/UTILITIES/Envelop
+< ./WELCOME/UTILITIES/Estruc
+< ./WELCOME/UTILITIES/FIX
+< ./WELCOME/UTILITIES/FMP
+< ./WELCOME/UTILITIES/FMPSRC
+< ./WELCOME/UTILITIES/FONTS
+< ./WELCOME/UTILITIES/NewPanel
+< ./WELCOME/UTILITIES/PFill
+< ./WELCOME/UTILITIES/PFONT
+< ./WELCOME/UTILITIES/Pstruc
+< ./WIMPS/Index1
+< ./WIMPS/P/crnw
+< ./WIMPS/P/SWRCODE
+< ./WIMPS/P/WIMPData
+< ./WIMPS/P/WIMPFONT
+< ./WIMPS/P/WLOAD
+< ./WIMPS/Pad
+< ./WIMPS/R/CLEAN_INDX
+< ./WIMPS/R/CLEAN_Pad
+< ./WIMPS/R/PMFS
+< ./WIMPS/R/SPRITER
+< ./WIMPS/R/WIMPSPR

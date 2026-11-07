@@ -1,0 +1,27 @@
+# Command (run in the original session; $SCRATCH was a temporary directory)
+L=$SCRATCH/mosdis/dist/mos500.lst; grep -n -E 'userVIA\.(ier|pcr|acr|ifr|ddrb)' $L | cut -c1-150 | head -20; cd $SCRATCH/compact-welcome; grep -n -i 'TSET\|TMAX\|ADVAL(5\|ADVAL(6\|ADVAL(9\|KEYS\b\|JOYSTICK\|TRACKER' listings/*.bas | head; grep -rl -a 'TSET\|TMAX' x_tbi103-2 x_tbi103-2a4 | grep -v inf
+
+# Output
+3135:515	.81db	9d 6d fe	sta $fe6d,x	                sta userVIA.ifr,x
+3154:541	.81f1	8e 6e fe	stx $fe6e	                stx userVIA.ier
+3162:550	.8203	8d 6c fe	sta $fe6c	                sta userVIA.pcr              ;VIA.pcr.cb2InputNegativeActiveEdge|VIA.pcr.cb1NegativeActiveEdge|VIA.p
+3172:579	.8218	8e 62 fe	stx $fe62	                stx userVIA.ddrb
+23671:7992	.e6cc	ad 6d fe	lda $fe6d	                lda userVIA.ifr
+23674:7995	.e6d4	2d 6e fe	and $fe6e	                and userVIA.ier
+23682:8003	.e6e3	8d 6d fe	sta $fe6d	                sta userVIA.ifr              ;acknowledge CA1
+23683:8004	.e6e6	8d 6e fe	sta $fe6e	                sta userVIA.ier              ;inhibit CA1
+24515:8954	.ea12	8c 6e fe	sty $fe6e	                sty userVIA.ier
+24517:8956	.ea18	ad 6c fe	lda $fe6c	                lda userVIA.pcr
+24520:8959	.ea1f	8d 6c fe	sta $fe6c	                sta userVIA.pcr
+24522:8961	.ea24	8d 6c fe	sta $fe6c	                sta userVIA.pcr
+listings/ADFSUTILS_Menu.bas:58:24600 DEFPROCB:GCOL0,1:PROC@(s%,t%,d0%,u%):GCOL0,0:PROC@(s%+4,t%+4,d0%-8,u%-8):VDU5:GCOL0,1:MOVEs%+c%,t%+u%-g%*1:PRINT"ADFS utility programs ";:MOVEs%+c%,t%+u%-g%*3:PRINT"Move the pointer around with the arrow keys";:MOVEs%+c%,t%+u%-g%*5:PRINT"Press the RETURN key to select menu items";:ENDPROC
+listings/WELCOME_Menu.bas:86: 3500 DEFPROCALOCALY%:GCOL0,1:PROC@(n%,o%,d0%,p%):GCOL0,0:PROC@(n%+4,o%+4,d0%-8,p%-8):VDU5:GCOL0,1:Y%=1:MOVEn%+a%,o%+p%-e%*Y%:PRINT"                   Welcome to the Master Compact!";:Y%=Y%+2:MOVEn%+a%,o%+p%-e%*Y%:PRINT"Move the pointer using the arrow keys, or joystick/mouse when connected.";
+listings/WELCOME_Menu.bas:87: 3600 Y%=Y%+2:MOVEn%+a%,o%+p%-e%*Y%:PRINT"Select menu items by pressing the RETURN key, or joystick/mouse button.";:Y%=Y%+2:MOVEn%+a%,o%+p%-e%*Y%:PRINT"      Please refer to the Welcome Guide for further information.";:Y%=Y%+2:ENDPROC
+listings/WELCOME_APPLIC_TimPaint.bas:29: 1020 DEFFN0(r%):IFADVAL(9)=0e0%=TRUEELSEe0%=FALSE
+listings/TimPaint_2a4.bas:97:  961 IFADVAL(9)=0 THEN MOUSE%=TRUE ELSEMOUSE%=FALSE
+listings/WIMPS_P_crnw.bas:247: 8220 DEFPROCA(`%,b%):OSCLI("TSET "+STR$(q%+`%*t%)+","+STR$(s%+b%*h%)):PROCI:ENDPROC
+listings/WIMPS_P_crnw.bas:383:14280 DEFPROCx:OSCLI("TSET "+STR$(r0%+j5%)+","+STR$(s0%+k5%)):ENDPROC
+x_tbi103-2/WIMPS/R/PMFS
+x_tbi103-2/WIMPS/P/crnw
+x_tbi103-2a4/WIMPS/R/PMFS
+x_tbi103-2a4/WIMPS/P/crnw
