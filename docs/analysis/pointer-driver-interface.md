@@ -65,14 +65,14 @@ increasing to the right and Y increasing upwards.
 **3.2** When the driver moves the pointer, X **MUST** stay in the range 0 to
 1276 (&4FC) and Y in the range 0 to 1020 (&3FC). (These are the largest
 multiples of 4 below 1280 and 1024. PMFS clamps to them in
-`move_pointer_right`, `move_pointer_up` and `mouse_movement`.)
+[`move_pointer_right`](label:move_pointer_right@136), [`move_pointer_up`](label:move_pointer_up@136) and [`mouse_movement`](label:mouse_movement@136).)
 
 **3.3** When the driver is turned on, the pointer **MUST** be placed at
-(640, 512), the middle of the screen (`select_device`). Selecting another
+(640, 512), the middle of the screen ([`select_device`](label:select_device@136)). Selecting another
 device while the driver is on does not move it.
 
 **3.4** `*TSET` sets the position to the values given, without clamping
-(`cmd_tset`). PMFS does not then always bring an out-of-range position back
+([`cmd_tset`](label:cmd_tset@136)). PMFS does not then always bring an out-of-range position back
 into range: the joystick and key movements clamp any X of 1280 or more and any
 Y of 1024 or more, but a mouse step stops only at positions from the limit
 up to 1279 (X) or 1023 (Y), and moves a position beyond those further out. Software **SHOULD** give `*TSET` values within the ranges of 3.2.
@@ -82,12 +82,12 @@ up to 1279 (X) or 1023 (Y), and moves a position beyond those further out. Softw
 ### 4.1 Parsing
 
 **4.1.1** Commands **MUST** be recognised whatever their case
-(`service_command` compares with bit 5 cleared).
+([`service_command`](label:service_command@136) compares with bit 5 cleared).
 
 **4.1.2** A command **MAY** be abbreviated with a full stop after one or more
 of its letters. Abbreviations **MUST** resolve in this order of commands:
 `KEYS`, `DIGITAL`, `JOYSTICK`, `MOUSE`, `POINTER`, `TMAX`, `TRACKERBALL`,
-`TSET`, `SETPAL` (the order of `command_table`). So `*T.` is `*TMAX` and
+`TSET`, `SETPAL` (the order of [`command_table`](label:command_table@136)). So `*T.` is `*TMAX` and
 `*M.` is `*MOUSE`.
 
 **4.1.3** A complete command name **MUST** be followed by a space or the end of
@@ -95,11 +95,11 @@ the line to be recognised. PMFS leaves a name followed by anything else
 (`*MOUSE0`, say) for other ROMs.
 
 **4.1.4** Arguments follow the name after any spaces and commas. Numbers are
-decimal, 0 to 65535, separated by spaces or commas (`parse_number`).
+decimal, 0 to 65535, separated by spaces or commas ([`parse_number`](label:parse_number@136)).
 
 **4.1.5** A missing number, a number above 65535, or any character other than a
 digit, space, comma or CR in a number **MUST** raise error &DC,
-`Bad number` (`bad_number_error`).
+`Bad number` ([`bad_number_error`](label:bad_number_error@136)).
 
 **4.1.6** PMFS runs every command with interrupts disabled. It claims the
 service call for every command it recognises.
@@ -115,7 +115,7 @@ service call for every command it recognises.
 ```
 
 **4.2.1** If the argument begins with the character `0`, the command **MUST**
-turn the driver off, whichever device it names (`turn_driver_off`). Turning
+turn the driver off, whichever device it names ([`turn_driver_off`](label:turn_driver_off@136)). Turning
 off **MUST** remove the pointer if it is shown, stop all movement and button
 handling, and restore the vectors the driver claimed. It does not change the
 device mode. Turning off a driver that is already off does nothing.
@@ -149,7 +149,7 @@ direct change of device while on.
 
 **4.2.5** `*KEYS` also issues `*FX4,2` (the cursor keys act as function keys)
 and `*FX226,0` (SHIFT with a function key is ignored), so that the cursor keys
-steer the pointer and do not edit (`cmd_keys`). It does so each time it is
+steer the pointer and do not edit ([`cmd_keys`](label:cmd_keys@136)). It does so each time it is
 used, even when turning the driver off. Neither setting is restored by
 another device command, or when the driver is turned off. A compatible driver
 **SHOULD** do the same, because software may rely on the cursor keys being
@@ -165,14 +165,14 @@ quiet in keys mode.
 
 **4.3.1** `*POINTER` with no argument, or with an argument beginning with any
 character other than `0` or `2`, **MUST** show the pointer, if the driver is on
-and the pointer is not already shown (`cmd_pointer`).
+and the pointer is not already shown ([`cmd_pointer`](label:cmd_pointer@136)).
 
 **4.3.2** `*POINTER 0` **MUST** remove the pointer from the screen, restoring
-what was under it (`remove_pointer`). The driver stays on and keeps moving the
+what was under it ([`remove_pointer`](label:remove_pointer@136)). The driver stays on and keeps moving the
 position.
 
 **4.3.3** `*POINTER 2` **MUST** do the same as `*POINTER 0`. PMFS also disables
-the mouse interrupts (`remove_pointer_and_mouse`), so mouse movement stops
+the mouse interrupts ([`remove_pointer_and_mouse`](label:remove_pointer_and_mouse@136)), so mouse movement stops
 until the pointer is next shown or the driver is next turned on. The Welcome
 programs use `*POINTER 2` before running other programs.
 
@@ -202,7 +202,7 @@ REPEAT : key% = INKEY(0) : x% = ADVAL(7) : y% = ADVAL(8) : UNTIL key% > -1
 ```
 
 **4.4.1** `*TSET` **MUST** set the pointer position to (x, y)
-(`cmd_tset`). Both numbers are required. The pointer, if shown, is moved at the
+([`cmd_tset`](label:cmd_tset@136)). Both numbers are required. The pointer, if shown, is moved at the
 next redraw (section 8.4).
 
 **4.4.2** It works whether or not the driver is on.
@@ -214,7 +214,7 @@ next redraw (section 8.4).
 ```
 
 **4.5.1** `*TMAX` **MUST** record x and y, and `ADVAL(5)` and `ADVAL(6)` **MUST**
-then return them (`cmd_tmax`). Both numbers are required.
+then return them ([`cmd_tmax`](label:cmd_tmax@136)). Both numbers are required.
 
 **4.5.2** In PMFS the values have no other effect; in particular they do not
 limit the pointer's movement.
@@ -227,13 +227,13 @@ limit the pointer's movement.
 
 **4.6.1** `*SETPAL` **MUST** send `VDU 19,0,c0,0,0,0` and `VDU 19,1,c1,0,0,0`,
 where c0 and c1 are the two desktop colours (section 6), setting logical
-colours 0 and 1 (`cmd_setpal`). It takes no arguments and works whether or
+colours 0 and 1 ([`cmd_setpal`](label:cmd_setpal@136)). It takes no arguments and works whether or
 not the driver is on.
 
 ## 5. ADVAL channels
 
 The driver extends OSBYTE &80 (`ADVAL`) with channels 5 to 9
-(`bytev_handler`). PMFS does this through BYTEV, only while the driver is on.
+([`bytev_handler`](label:bytev_handler@136)). PMFS does this through BYTEV, only while the driver is on.
 
 | Channel | Returns |
 |---------|---------|
@@ -273,7 +273,7 @@ A=&A3, X=&F3, Y=parameter
 ```
 
 The driver stores two physical colours for logical colours 0 and 1, the
-**desktop colours** (`set_desktop_colours`). The call claims the OSBYTE (it
+**desktop colours** ([`set_desktop_colours`](label:set_desktop_colours@136)). The call claims the OSBYTE (it
 is handled on service call 7) and returns X and Y unchanged.
 
 | Y | Effect |
@@ -304,7 +304,7 @@ PMFS's bank, which the ROM image initialises to zero.)
 
 **7.1.1** Each step of the mouse **MUST** move the pointer 4 graphics units in
 the direction of movement, clamped as in 3.2. PMFS counts one step per
-quadrature cycle on each axis (`mouse_movement`).
+quadrature cycle on each axis ([`mouse_movement`](label:mouse_movement@136)).
 
 **7.1.2** The mouse moves the pointer as it moves, whether or not the pointer is
 shown.
@@ -312,7 +312,7 @@ shown.
 ### 7.2 Joysticks and keys
 
 Every centisecond the driver reads the device and moves the pointer
-(`poll_move_pointer`):
+([`poll_move_pointer`](label:poll_move_pointer@136)):
 
 | Device | Left | Right | Down | Up |
 |--------|------|-------|------|----|
@@ -328,9 +328,9 @@ high readings are left and up.
 
 **7.3.1** For joysticks and keys, each axis has a speed in 1/256 graphics
 units, reset to &0080 when the axis stops moving and when a device is
-selected (`reset_x_speed`). While the axis moves, each centisecond moves the
+selected ([`reset_x_speed`](label:reset_x_speed@136)). While the axis moves, each centisecond moves the
 pointer by the whole part of the speed and then adds &0010 to it
-(`move_pointer_left` and the others).
+([`move_pointer_left`](label:move_pointer_left@136) and the others).
 
 So the pointer first moves after 8 centiseconds, and then moves one unit
 further each step for every 16 centiseconds held: after half a second it
@@ -338,7 +338,7 @@ moves 3 units a centisecond, and after a second 6.
 
 **7.3.2** With the cursor keys, holding SHIFT adds a further &0040 to both
 speeds every centisecond, so the pointer accelerates five times as fast
-(`poll_keys`).
+([`poll_keys`](label:poll_keys@136)).
 
 A compatible driver **SHOULD** give similar acceleration, so that software
 tuned for PMFS's feel remains usable. Exact figures are not required.
@@ -372,21 +372,21 @@ tuned for PMFS's feel remains usable. Exact figures are not required.
 
 **8.1.2** The pointer position is the **hot spot**, 4 graphics units right of
 and 4 below the top left corner of the image, at the tip of the arrow
-(`hotspot_x`, `hotspot_y`). Software **MUST** be able to assume that the tip
+([`hotspot_x`](label:hotspot_x@136), [`hotspot_y`](label:hotspot_y@136)). Software **MUST** be able to assume that the tip
 of the arrow is at (`ADVAL(7)`, `ADVAL(8)`).
 
 **8.1.3** The image is 4 screen bytes wide: 32 pixels in MODEs 0 and 4, 16 in
 MODEs 1 and 5, and 8 in MODE 2. Each mode has its own image
-(`pointer_images`) and mask (`pointer_masks`). The pointer moves in
+([`pointer_images`](label:pointer_images@136)) and mask ([`pointer_masks`](label:pointer_masks@136)). The pointer moves in
 quarter-byte steps: PMFS keeps four copies of the image, each shifted a
-quarter of a byte further right (`build_pointer_images`).
+quarter of a byte further right ([`build_pointer_images`](label:build_pointer_images@136)).
 
 ### 8.2 Drawing
 
 **8.2.1** The pointer **MUST** be drawn so that removing it restores the screen
 exactly. PMFS saves the 64 screen bytes under the image, ANDs each with the
-mask and ORs in the image (`update_pointer`), and puts the saved bytes back
-to remove it (`restore_screen_under_pointer`).
+mask and ORs in the image ([`update_pointer`](label:update_pointer@136)), and puts the saved bytes back
+to remove it ([`restore_screen_under_pointer`](label:restore_screen_under_pointer@136)).
 
 **8.2.2** The pointer **MUST** be clipped at the edges of the screen; it can
 reach to the screen's right and top edges.
@@ -411,7 +411,7 @@ in colours 0 and 1.
 **8.4.1** PMFS redraws the pointer when it has moved, at most once every 11
 centiseconds when only the joystick or keys move it, and sooner when the mouse
 is moving: each mouse step also counts down to the next redraw
-(`poll_redraw_and_buttons`, `mouse_movement`). The pointer therefore lags the
+([`poll_redraw_and_buttons`](label:poll_redraw_and_buttons@136), [`mouse_movement`](label:mouse_movement@136)). The pointer therefore lags the
 position reported by `ADVAL(7)` and `ADVAL(8)` slightly. A compatible driver
 **MAY** redraw more often.
 
@@ -421,7 +421,7 @@ while polling is stopped (section 10.3).
 ## 9. Buttons
 
 **9.1** Buttons **MUST** be reported by inserting a character into the keyboard
-buffer with OSBYTE &99, as if it were typed (`scan_buttons`):
+buffer with OSBYTE &99, as if it were typed ([`scan_buttons`](label:scan_buttons@136)):
 
 | Device | Button | Character |
 |--------|--------|-----------|
@@ -532,7 +532,7 @@ previous IRQ1V handler runs.
 
 In mouse mode PMFS sets up the User VIA when the driver is turned on: CB1
 and CB2 interrupt on a falling edge, port latching off, CB1 and CB2
-interrupts enabled, and port B all inputs (`select_device`). It reads port
+interrupts enabled, and port B all inputs ([`select_device`](label:select_device@136)). It reads port
 B. It does not restore the VIA when turned off, beyond disabling the CB1 and
 CB2 interrupts. Hardware that uses the User VIA's port B or CB lines for
 anything else cannot be used at the same time.
@@ -561,12 +561,12 @@ interrupt to give the direction: high is right or up, low is left or down.
 | Middle button | PB1 | PB6 |
 | Right button | PB2 | PB7 |
 
-Buttons read low when pressed. The table is `pinout_table`.
+Buttons read low when pressed. The table is [`pinout_table`](label:pinout_table@136).
 
 PMFS detects the wiring once after being turned on: the first button reading
 with any of PB5-PB7 low selects the User Port wiring, and the first mouse
 interrupt with either of PB3 and PB4 low selects the Compact wiring
-(`scan_buttons`, `mouse_movement`).
+([`scan_buttons`](label:scan_buttons@136), [`mouse_movement`](label:mouse_movement@136)).
 
 On the Compact joystick port, MOS 5 reads PB0-PB4 as fire, left, down, up and
 right. With the Compact wiring, the mouse's left button is therefore the
@@ -581,18 +581,18 @@ them, and software **SHOULD NOT** depend on them.
 1. **Reset does not reset.** On service call &27 PMFS clears its "on",
    "pointer shown" and "button pending" flags at &900A, &900B and &9015 with
    direct stores. But PMFS keeps its state at &9440 between calls and
-   exchanges it into &9000 only while it runs (`exchange_workspace`), so the
-   stores reach the wrong copy (`reset_driver_state`). The device mode, at
+   exchanges it into &9000 only while it runs ([`exchange_workspace`](label:exchange_workspace@136)), so the
+   stores reach the wrong copy ([`reset_driver_state`](label:reset_driver_state@136)). The device mode, at
    &9031, is outside the exchanged area and is reset. After a reset the MOS
    has restored BYTEV and IRQ1V, but PMFS's live state still says the
    driver is on.
 2. **Zero page &90 is overwritten.** PMFS saves ACCCON at &902E while drawing,
    which is also where it saved the caller's zero page &90. On exit it
-   "restores" &90 with ACCCON's value (`leave_driver`). This happens whenever
+   "restores" &90 with ACCCON's value ([`leave_driver`](label:leave_driver@136)). This happens whenever
    the pointer is drawn or removed.
 3. **Command arguments on the next page.** When moving past the command name,
    a carry increments the pointer's low byte instead of its high byte
-   (`advance_to_arguments`), so arguments that start on the page after the
+   ([`advance_to_arguments`](label:advance_to_arguments@136)), so arguments that start on the page after the
    command name are read from the wrong place.
 4. **Changing to the mouse while on.** As described in 4.2.4, the mouse
    interrupts are only enabled when the driver is turned on in mouse mode or
@@ -600,10 +600,10 @@ them, and software **SHOULD NOT** depend on them.
 5. **All buttons at once.** A button reading of 0 (all three mouse buttons,
    or both fire buttons, pressed) is confused with "no change pending", so
    while it lasts the character for the previous reading is sent again every
-   centisecond (`scan_buttons`).
+   centisecond ([`scan_buttons`](label:scan_buttons@136)).
 6. **`*TSET` is not clamped**, and the drawing routines handle positions
    above the top of the screen only approximately; the restore routine does
-   not skip rows there (`restore_screen_under_pointer`). Within the clamped
+   not skip rows there ([`restore_screen_under_pointer`](label:restore_screen_under_pointer@136)). Within the clamped
    range this makes no difference.
 7. **`*POINTER 0` in a text mode** is ignored, so a pointer shown in a graphics
    mode cannot be removed after a mode change to MODE 3, 6 or 7 except by
