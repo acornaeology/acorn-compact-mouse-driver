@@ -1,0 +1,24 @@
+{
+    "slug": "acorn-compact-mouse-driver",
+    "name": "Acorn Master Compact Mouse Driver (PMFS)",
+    "description": "An annotated disassembly of PMFS, the pointer and mouse driver on the Acorn BBC Master Compact Welcome disc. PMFS is a 65C02 sideways ROM image, loaded into sideways RAM, that moves a software pointer from a quadrature mouse or trackerball, an analogue or digital joystick, or the cursor keys, and reports its position through ADVAL. MOS 5 has no mouse support of its own, so PMFS is the Master Compact's mouse driver, and the interface it presents is the one Welcome-era software expects. PMFS is (C) 1986 PMF; the annotations and disassembly scripts here are (C) 2026 Acornaeology.",
+    "glossary": "GLOSSARY.md",
+    "versions": ["136"],
+    "analyses": [],
+    "references": [
+        {
+            "label": "Stardot thread: Master Compact Welcome disc",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?t=33348",
+            "category": "related",
+            "icon": "chat",
+            "note": "Disc images of the Master Compact Welcome disc, from which PMFS is extracted."
+        },
+        {
+            "label": "Tom Seddon's annotated disassembly of MOS 3.20 and 5.00",
+            "url": "https://github.com/tom-seddon/acorn_mos_disassembly",
+            "category": "related",
+            "icon": "chip",
+            "note": "The Master Compact's MOS 5.00, whose joystick, ADVAL and User VIA handling PMFS builds on."
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+# fantasm project configuration. See docs/configuration.md for the schema.
+
+[project]
+name = "acorn-compact-mouse-driver"
+
+[rom]
+# PMFS is a sideways ROM image, loaded into sideways RAM with *SRLOAD and
+# run at &8000. It uses CMOS-only opcodes (STZ, PHX, PHY, BRA), so it needs
+# a Master-series 65C02.
+cpu = "65c02"
+base_address = 0x8000
+
+[versions]
+prefixes = ["pmfs"]
+
+# The Master Compact Welcome disc carries one build of PMFS, at
+# $.WIMPS.R.PMFS: version string "136", 8 KB.
+[[versions.entry]]
+id = "136"

@@ -1,0 +1,71 @@
+name: Verify disassembly
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  check-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Check README.md is up to date
+        run: uv run generate_readme.py --check
+
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["136"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install Python
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build beebasm
+        uses: actions/cache@v4
+        id: beebasm-cache
+        with:
+          path: /usr/local/bin/beebasm
+          key: beebasm-v1.11-rebuild
+
+      - name: Build beebasm from source
+        if: steps.beebasm-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 --branch v1.11 https://github.com/stardot/beebasm.git /tmp/beebasm
+          cmake -S /tmp/beebasm -B /tmp/beebasm/build
+          make -C /tmp/beebasm/build -j$(nproc)
+          sudo cp /tmp/beebasm/build/beebasm /usr/local/bin/
+
+      # Render the version_id with dots removed for the lint step
+      # (it takes the driver path as a positional argument); the
+      # disassemble and verify steps take the version_id straight.
+      - name: Compute driver path
+        id: driver
+        run: |
+          ver="${{ matrix.version }}"
+          ver_no_dots="${ver//./}"
+          echo "path=versions/pmfs-${ver}/disassemble/disasm_pmfs_${ver_no_dots}.py" >> "$GITHUB_OUTPUT"
+
+      - name: Disassemble PMFS ${{ matrix.version }}
+        run: uv run fantasm disassemble ${{ matrix.version }}
+
+      - name: Lint PMFS ${{ matrix.version }}
+        run: uv run fantasm lint ${{ matrix.version }} ${{ steps.driver.outputs.path }}
+
+      - name: Verify PMFS ${{ matrix.version }}
+        run: uv run fantasm verify ${{ matrix.version }}
+
+      - name: Check the ROM image against the Welcome disc image
+        run: uv run python tools/extract_rom.py

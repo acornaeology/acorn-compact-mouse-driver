@@ -1,0 +1,62 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project overview
+
+An annotated disassembly of **PMFS**, the pointer and mouse driver on the Acorn BBC Master Compact Welcome disc (`$.WIMPS.R.PMFS`, "PMFS 136 (C)1986 PMF"). PMFS is a 65C02 sideways ROM image, loaded into sideways RAM with `*SRLOAD`, so the project follows the layout of the sibling ROM projects (acorn-adfs, acorn-nfs), with one fantasm version, id `136`.
+
+The project has two goals:
+
+1. A fully annotated disassembly to the same standard as the sibling projects, verified by byte-identical reassembly.
+2. A formal definition of the driver's API (star commands, ADVAL channels, service calls, OSBYTE extensions, button-to-key mapping, hardware conventions), so that compatible drivers for other mouse hardware can be written. This lives in `docs/analysis/`.
+
+Follow the `disassembly-skills:6502-disassembly` skill's method.
+
+## Build commands
+
+Requires [uv](https://docs.astral.sh/uv/) and [beebasm](https://github.com/stardot/beebasm) (v1.10+).
+
+```sh
+uv sync
+uv run fantasm disassemble 136
+uv run fantasm verify 136          # must report 8192 bytes match
+uv run fantasm lint 136 versions/pmfs-136/disassemble/disasm_pmfs_136.py
+uv run fantasm comments check 136
+uv run python tools/extract_rom.py # the ROM image matches the file on the disc image
+uv run generate_readme.py          # after changing acornaeology.json, rom.json or README.md.j2
+```
+
+## Binaries
+
+| File | Load | Size | MD5 | Notes |
+|---|---|---|---|---|
+| `versions/pmfs-136/rom/pmfs-136.rom` | &8000 (`.inf` load &FFFF8000) | &2000 | `6f95ee5f69b7273c7bf0b932ebdb975f` | `$.WIMPS.R.PMFS` on the Welcome disc |
+| `versions/pmfs-136/BBC_Master_Compact_Welcome_Disc.adl` | | 640 KB | `96d54a27b237886fd76bcc5ad2574e33` | ADFS L image of the Welcome disc; the ROM's source |
+
+- CPU: 65C02 (`cpu="65c02"`). PMFS uses STZ, PHX, PHY and BRA.
+- Header: no language entry; service entry `JMP &801E`; ROM type &82; binary version 1.
+- The ROM keeps its workspace inside its own bank at &9000 upwards, so it only works from sideways RAM.
+- A 6 KB build of PMFS (MD5 `8826f28b3575e9481944528ebf09893c`) exists on other Compact disc images (tbi103-2 and others, see `docs/notes/README.md`). It is not on this Welcome disc and is not disassembled here.
+- The rest of the Welcome disc (including SPRITER, Acorn's separate Sprite ROM) is out of scope.
+
+## Layout
+
+- Driver: `versions/pmfs-136/disassemble/disasm_pmfs_136.py`. The source of truth; never edit `output/` by hand.
+- Generated: `versions/pmfs-136/output/pmfs-136.asm`, `pmfs-136.json`.
+- `versions/pmfs-136/rom/rom.json`: title, hashes, memory-map groups and links used by the website.
+- `docs/analysis/`: long-form articles, registered as `analyses` in `acornaeology.json`.
+- `docs/notes/`: preliminary notes from an earlier investigation of the 6 KB build, and recovered command output. Addresses there are mostly for the 6 KB build and some statements are inferences; the disassembly is authoritative.
+
+## Coupling to the website
+
+The sibling [acornaeology.github.io](https://github.com/acornaeology/acornaeology.github.io) generator renders each version's committed `output/*.json` plus `rom/rom.json`, and reads `acornaeology.json` for the project page. Keep `rom.json` `memory_map_groups` in step with the `group=` values used on `d.label(...)`.
+
+## Conventions
+
+- Hex as `&XXXX` in prose and comments, `0xXXXX` in Python.
+- Comment every instruction; banner every routine and data region.
+- Inline comments describe intent in domain terms (the pointer, the mouse, device mode, buttons), never a paraphrase of the mnemonic.
+- Published text describes the program as it is; no history of the disassembly.
+- Out-of-ROM labels (OS entry points, vectors, hardware registers, PMFS's own workspace at &9000) carry `group=`/`description=`/`access=`/`length=` so they populate the memory-map page.
+- Do not identify "PMF" or "JPG" in the listing; the ROM shows only the initials.

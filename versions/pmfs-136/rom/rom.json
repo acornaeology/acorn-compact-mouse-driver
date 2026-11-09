@@ -1,0 +1,29 @@
+{
+    "title": "PMFS 136, the Master Compact pointer and mouse driver",
+    "size": 8192,
+    "md5": "6f95ee5f69b7273c7bf0b932ebdb975f",
+    "sha256": "68bec3b3effa3d8180791e278279556ed4dd801db2e63436547a42108329c1f9",
+    "notes": "The file $.WIMPS.R.PMFS (load and execution address &FFFF8000, 8,192 bytes) on the Acorn BBC Master Compact Welcome disc, extracted with oaknut-disc. A 65C02 sideways ROM image that the Welcome disc's $.Loader puts in sideways RAM bank 5 with *SRLOAD. The ROM identifies itself as PMFS 136, (C)1986 PMF.",
+    "memory_map_groups": {
+        "zero_page": "Zero page",
+        "os_vectors": "MOS vectors",
+        "os_workspace": "MOS workspace",
+        "extended_vectors": "Extended vector workspace (&0D9F-&0DEF)",
+        "pmfs_workspace": "PMFS workspace (in its own sideways RAM bank)",
+        "hardware": "Hardware I/O",
+        "os_entry_points": "MOS entry points"
+    },
+    "links": [
+        {
+            "label": "Disassembly source on GitHub",
+            "url": "https://github.com/acornaeology/acorn-compact-mouse-driver/blob/master/versions/pmfs-136/output/pmfs-136.asm",
+            "icon": "github"
+        },
+        {
+            "label": "Stardot thread: Master Compact Welcome disc",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?t=33348",
+            "icon": "chat",
+            "category": "discussion"
+        }
+    ]
+}
