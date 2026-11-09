@@ -21,7 +21,7 @@ err_bad_number                       = &dc
 key_return                           = &0d
 key_right_button                     = &c0
 vdu_set_palette                      = &13
-ext_vector_offset_irq2v              = &06
+ext_vector_offset_irq1v              = &06
 ext_vector_offset_bytev              = &0f
 opcode_jsr                           = &20
 opcode_jmp                           = &4c
@@ -103,7 +103,7 @@ saved_bytev                = &0d97  ; The value BYTEV had before the driver was 
 ; &0d97 referenced 3 times by &827a, &8331, &87c5
 saved_bytev_hi             = &0d98
 ; &0d98 referenced 2 times by &8280, &8337
-irq1v_trampoline           = &0d99  ; Six bytes of code built by the driver when it is turned on: JSR irq2v_extended_entry : JMP old_irq1v_handler, where the JMP's operand is saved_irq1v. IRQ1V points here, so each interrupt first pages in PMFS and runs irq_handler, then continues to the previous IRQ1V handler.
+irq1v_trampoline           = &0d99  ; Six bytes of code built by the driver when it is turned on: JSR irq1v_extended_entry : JMP old_irq1v_handler, where the JMP's operand is saved_irq1v. IRQ1V points here, so each interrupt first pages in PMFS and runs irq_handler, then continues to the previous IRQ1V handler.
 ; &0d99 referenced 1 time by &8360
 irq1v_trampoline_target    = &0d9a
 ; &0d9a referenced 1 time by &8365
@@ -131,7 +131,7 @@ user_via_ifr               = &fe6d
 ; &fe6d referenced 1 time by &8830
 user_via_ier               = &fe6e
 ; &fe6e referenced 5 times by &82fe, &830a, &83cf, &83e4, &8829
-irq2v_extended_entry       = &ff06  ; Extended vector entry point for vector 2 (IRQ2V). Calling it pages in the ROM recorded in entry 2 of the extended vector table and jumps to the address held there. PMFS takes over this entry to get from its IRQ1V trampoline into the ROM.
+irq1v_extended_entry       = &ff06  ; Extended vector entry point for vector 2 (IRQ1V). Calling it pages in the ROM recorded in entry 2 of the extended vector table, calls the address held there, and pages the previous ROM back in. PMFS's IRQ1V trampoline calls it to run irq_handler.
 bytev_extended_entry       = &ff0f  ; Extended vector entry point for vector 5 (BYTEV). PMFS points BYTEV here, and puts its OSBYTE handler in entry 5 of the extended vector table.
 oswrch                     = &ffee  ; Write a character to the VDU stream. PMFS uses it only for the VDU 19 palette commands sent by *SETPAL.
 ; &ffee referenced 12 times by &80ef, &80f4, &80fa, &80ff, &8102, &8105, &810a, &810f, &8115, &811a, &811d, &8120
@@ -887,8 +887,13 @@ cpu 1
 ; - BYTEV is pointed at the extended vector entry for BYTEV, and the extended vector
 ;   table entry at bytev_handler in this ROM;
 ; - IRQ1V is pointed at irq1v_trampoline, which is built here, and the extended vector
-;   table entry for IRQ2V is pointed at irq_handler in this ROM. The MOS's own use of
-;   that entry is overwritten.
+;   table entry for IRQ1V is pointed at irq_handler in this ROM. IRQ1V does not point at
+;   that entry itself: the trampoline calls it, so that when irq_handler returns, the
+;   previous ROM is paged back in and the trampoline continues to the old IRQ1V handler.
+;
+; In both cases the low byte of the extended vector entry point (&0F, &06) is also the
+; offset of the vector's entry in the table, three times the vector number, so one
+; register load serves for both.
 ;
 ; The pointer is not shown; that takes *POINTER.
 ; &82bd referenced 3 times by &82aa, &82b1, &82b8
@@ -966,9 +971,9 @@ cpu 1
     sta saved_irq1v_hi                  ; ...
     lda #opcode_jsr                     ; Build the trampoline: JSR...
     sta irq1v_trampoline                ; ...
-    ldy #<(irq2v_extended_entry)        ; &FF06, the extended vector entry for IRQ2V;
+    ldy #<(irq1v_extended_entry)        ; &FF06, the extended vector entry for IRQ1V;
     sty irq1v_trampoline_target         ; &06 is also its offset in the table
-    lda #>(irq2v_extended_entry)        ; ...
+    lda #>(irq1v_extended_entry)        ; ...
     sta irq1v_trampoline_target_hi      ; ...
     lda #opcode_jmp                     ; then JMP (to the old IRQ1V handler)
     sta irq1v_trampoline_jmp            ; ...
@@ -976,7 +981,7 @@ cpu 1
     sta irq1v                           ; ...
     lda #>(irq1v_trampoline)            ; ...
     sta irq1v + 1                       ; ...
-    lda #<(irq_handler)                 ; Table entry for IRQ2V: address of irq_handler
+    lda #<(irq_handler)                 ; Table entry for IRQ1V: address of irq_handler
     sta (cmd_ptr),y                     ; ...
     iny                                 ; ...
     lda #>(irq_handler)                 ; ...
@@ -1969,7 +1974,7 @@ cpu 1
 ; Interrupt handler: mouse movement
 ;
 ; Reached on every interrupt while the driver is on: IRQ1V points at irq1v_trampoline,
-; whose JSR to the IRQ2V extended vector entry pages in this ROM and calls here, and
+; whose JSR to the IRQ1V extended vector entry pages in this ROM and calls here, and
 ; whose JMP then goes on to the previous IRQ1V handler. So the interrupt is never
 ; claimed; the MOS handles it too.
 ;

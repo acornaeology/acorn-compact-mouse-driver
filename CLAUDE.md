@@ -32,7 +32,7 @@ uv run generate_readme.py          # after changing acornaeology.json, rom.json 
 | File | Load | Size | MD5 | Notes |
 |---|---|---|---|---|
 | `versions/pmfs-136/rom/pmfs-136.rom` | &8000 (`.inf` load &FFFF8000) | &2000 | `6f95ee5f69b7273c7bf0b932ebdb975f` | `$.WIMPS.R.PMFS` on the Welcome disc |
-| `versions/pmfs-136/BBC_Master_Compact_Welcome_Disc.adl` | | 640 KB | `96d54a27b237886fd76bcc5ad2574e33` | ADFS L image of the Welcome disc; the ROM's source |
+| `versions/pmfs-136/BBC_Master_Compact_Welcome_Disc.adl` | | 640 KB | `96d54a27b237886fd76bcc5ad2574e33` | ADFS L image of the Welcome disc; the ROM's source. Identical to b2's `etc/discs/CompactWelcome.adl` |
 
 - CPU: 65C02 (`cpu="65c02"`). PMFS uses STZ, PHX, PHY and BRA.
 - Header: no language entry; service entry `JMP &801E`; ROM type &82; binary version 1.
@@ -45,7 +45,7 @@ uv run generate_readme.py          # after changing acornaeology.json, rom.json 
 - Driver: `versions/pmfs-136/disassemble/disasm_pmfs_136.py`. The source of truth; never edit `output/` by hand.
 - Generated: `versions/pmfs-136/output/pmfs-136.asm`, `pmfs-136.json`.
 - `versions/pmfs-136/rom/rom.json`: title, hashes, memory-map groups and links used by the website.
-- `docs/analysis/`: long-form articles, registered as `analyses` in `acornaeology.json`.
+- `docs/analysis/`: long-form articles, registered as `analyses` in `acornaeology.json`: `pointer-driver-interface.md` (the formal API specification, goal 2) and `how-pmfs-works.md` (internal design). Keep them in step with the driver's routine names.
 - `docs/notes/`: preliminary notes from an earlier investigation of the 6 KB build, and recovered command output. Addresses there are mostly for the 6 KB build and some statements are inferences; the disassembly is authoritative.
 
 ## Coupling to the website
@@ -60,3 +60,16 @@ The sibling [acornaeology.github.io](https://github.com/acornaeology/acornaeolog
 - Published text describes the program as it is; no history of the disassembly.
 - Out-of-ROM labels (OS entry points, vectors, hardware registers, PMFS's own workspace at &9000) carry `group=`/`description=`/`access=`/`length=` so they populate the memory-map page.
 - Do not identify "PMF" or "JPG" in the listing; the ROM shows only the initials.
+
+## Key technical context
+
+- **Workspace exchange.** PMFS's state lives at &9440-&946F between calls and is swapped into &9000-&902F while it runs (`exchange_workspace`; the IRQ path swaps only &9000-&9009). Anything at &9000-&902F that is read or written outside an enter/leave pair touches the wrong copy; &9030-&9037 are used in place.
+- **Vectors.** BYTEV -> &FF0F (BYTEV's extended vector entry) -> `bytev_handler`. IRQ1V -> `irq1v_trampoline` at &0D99 (`JSR &FF06 : JMP old`) -> IRQ1V's extended vector entry -> `irq_handler`. Extended vector entry points are &FF00 + 3n, and n*3 is also the table offset.
+- **MOS 5 facts used** (from `~/Code/acorn_mos_disassembly`): service &15 is issued each centisecond while the ROM polling semaphore is non-zero; service &07 has the OSBYTE's A/X in &EF/&F0 and Y in Y; Compact joystick port is PB0 fire, PB1 left, PB2 down, PB3 up, PB4 right, read into `ADVAL(0)` bits 0, 4, 5, 6, 7; `ADVAL(0)` bits 1-3 are mouse buttons only a ROM can supply (service &2C); `&034E` is the screen start high byte.
+- **Welcome software usage** was read from its detokenised BASIC (oaknut-basic): `$.Loader` does `*SRLOAD PMFS 8000 5 Q`, `?&2A6=&82`, `*DIGITAL`, `*FX23`, `*FX163,243,128`; programs use `*POINTER`/`*POINTER 0`/`*POINTER 2`, `ADVAL(7)`/`(8)`, `ADVAL(9)=0` (TimPaint), `*TSET` (crnw), `*SETPAL`, `*FX22`, and OSBYTE &A3,&F3 with Y=(n*8) OR &40.
+
+## Open questions
+
+- Behaviour claims are from reading the code; none has yet been confirmed in an emulator. b2 (`~/Code/b2`) has a Master Compact config and an HTTP API on port 48075 (reset, paste, peek, poke), but requests timed out when tried; worth retrying to confirm the defects listed in the interface specification (section 12), especially the reset defect and the &90 corruption.
+- Why the state is exchanged between &9000 and &9440 rather than used in place.
+- What PMFS, PMF and JPG stand for.

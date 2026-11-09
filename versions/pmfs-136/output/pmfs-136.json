@@ -102,7 +102,7 @@
       "value": 19
     },
     {
-      "name": "ext_vector_offset_irq2v",
+      "name": "ext_vector_offset_irq1v",
       "value": 6
     },
     {
@@ -644,7 +644,7 @@
       "addr": 34853,
       "name": "irq_handler",
       "title": "Interrupt handler: mouse movement",
-      "description": "Reached on every interrupt while the driver is on: IRQ1V points at\nirq1v_trampoline, whose JSR to the IRQ2V extended vector entry pages in\nthis ROM and calls here, and whose JMP then goes on to the previous IRQ1V\nhandler. So the interrupt is never claimed; the MOS handles it too.\n\nIf the User VIA's CB1 or CB2 interrupt is enabled and either has\noccurred, the first ten bytes of the workspace (the pointer position,\nthe pinout and the redraw countdown) are brought in, the pointer is\nmoved (mouse_movement), and they are put back. The CB1 and CB2\ninterrupts are only enabled in mouse mode.",
+      "description": "Reached on every interrupt while the driver is on: IRQ1V points at\nirq1v_trampoline, whose JSR to the IRQ1V extended vector entry pages in\nthis ROM and calls here, and whose JMP then goes on to the previous IRQ1V\nhandler. So the interrupt is never claimed; the MOS handles it too.\n\nIf the User VIA's CB1 or CB2 interrupt is enabled and either has\noccurred, the first ten bytes of the workspace (the pointer position,\nthe pinout and the redraw countdown) are brought in, the pointer is\nmoved (mouse_movement), and they are put back. The CB1 and CB2\ninterrupts are only enabled in mouse mode.",
       "on_exit": {
         "A": "preserved",
         "X": "preserved",
@@ -865,7 +865,7 @@
       "addr": 33469,
       "name": "select_device",
       "title": "Select a device, and turn the driver on or off",
-      "description": "Common tail of the device commands, with device_mode already set. The\njoystick and key speeds are reset. If the argument starts with \"0\" the\ndriver is turned off (turn_driver_off). Otherwise, if the driver is\nalready on, nothing more is done: only the device mode has changed. In\nparticular the mouse interrupts are not enabled or disabled to suit the\nnew mode until *POINTER shows the pointer again, which is why software\nswitches devices with, for example, *DIGITAL 0 then *MOUSE.\n\nIf the driver is off, it is turned on:\n\n- driver_on is set, the pointer is marked not shown, and no button change\n  is pending;\n- OSBYTE &16 starts the polling service calls;\n- the mouse pinout is marked as not yet detected;\n- in mouse mode the User VIA is set up for the mouse: CB1 and CB2\n  interrupt on a falling edge, port latching off, CB1 and CB2 interrupts\n  enabled and port B all inputs; in other modes the CB1 and CB2\n  interrupts are disabled;\n- the pointer is put in the middle of the screen, at (640, 512);\n- BYTEV is pointed at the extended vector entry for BYTEV, and the\n  extended vector table entry at bytev_handler in this ROM;\n- IRQ1V is pointed at irq1v_trampoline, which is built here, and the\n  extended vector table entry for IRQ2V is pointed at irq_handler in this\n  ROM. The MOS's own use of that entry is overwritten.\n\nThe pointer is not shown; that takes *POINTER.",
+      "description": "Common tail of the device commands, with device_mode already set. The\njoystick and key speeds are reset. If the argument starts with \"0\" the\ndriver is turned off (turn_driver_off). Otherwise, if the driver is\nalready on, nothing more is done: only the device mode has changed. In\nparticular the mouse interrupts are not enabled or disabled to suit the\nnew mode until *POINTER shows the pointer again, which is why software\nswitches devices with, for example, *DIGITAL 0 then *MOUSE.\n\nIf the driver is off, it is turned on:\n\n- driver_on is set, the pointer is marked not shown, and no button change\n  is pending;\n- OSBYTE &16 starts the polling service calls;\n- the mouse pinout is marked as not yet detected;\n- in mouse mode the User VIA is set up for the mouse: CB1 and CB2\n  interrupt on a falling edge, port latching off, CB1 and CB2 interrupts\n  enabled and port B all inputs; in other modes the CB1 and CB2\n  interrupts are disabled;\n- the pointer is put in the middle of the screen, at (640, 512);\n- BYTEV is pointed at the extended vector entry for BYTEV, and the\n  extended vector table entry at bytev_handler in this ROM;\n- IRQ1V is pointed at irq1v_trampoline, which is built here, and the\n  extended vector table entry for IRQ1V is pointed at irq_handler in this\n  ROM. IRQ1V does not point at that entry itself: the trampoline calls it,\n  so that when irq_handler returns, the previous ROM is paged back in and\n  the trampoline continues to the old IRQ1V handler.\n\nIn both cases the low byte of the extended vector entry point (&0F, &06) is\nalso the offset of the vector's entry in the table, three times the vector\nnumber, so one register load serves for both.\n\nThe pointer is not shown; that takes *POINTER.",
       "align": "before_label"
     },
     {
@@ -1130,7 +1130,7 @@
     "cube_tube_data_out_from_host": 65264,
     "cube_tube_data_in_to_host": 65265,
     "cube_tube_status": 65277,
-    "irq2v_extended_entry": 65286,
+    "irq1v_extended_entry": 65286,
     "bytev_extended_entry": 65295,
     "osrdsc": 65465,
     "vduchr": 65468,
@@ -1330,7 +1330,7 @@
       "access": [
         "w"
       ],
-      "description": "Six bytes of code built by the driver when it is turned on: JSR irq2v_extended_entry : JMP old_irq1v_handler, where the JMP's operand is saved_irq1v. IRQ1V points here, so each interrupt first pages in PMFS and runs irq_handler, then continues to the previous IRQ1V handler."
+      "description": "Six bytes of code built by the driver when it is turned on: JSR irq1v_extended_entry : JMP old_irq1v_handler, where the JMP's operand is saved_irq1v. IRQ1V points here, so each interrupt first pages in PMFS and runs irq_handler, then continues to the previous IRQ1V handler."
     },
     {
       "addr": 3485,
@@ -1356,9 +1356,9 @@
     },
     {
       "addr": 65286,
-      "name": "irq2v_extended_entry",
+      "name": "irq1v_extended_entry",
       "group": "os_entry_points",
-      "description": "Extended vector entry point for vector 2 (IRQ2V). Calling it pages in the ROM recorded in entry 2 of the extended vector table and jumps to the address held there. PMFS takes over this entry to get from its IRQ1V trampoline into the ROM."
+      "description": "Extended vector entry point for vector 2 (IRQ1V). Calling it pages in the ROM recorded in entry 2 of the extended vector table, calls the address held there, and pages the previous ROM back in. PMFS's IRQ1V trampoline calls it to run irq_handler."
     },
     {
       "addr": 65295,
@@ -7372,16 +7372,16 @@
         160,
         6
       ],
-      "comment_inline": "&FF06, the extended vector entry for IRQ2V;",
+      "comment_inline": "&FF06, the extended vector entry for IRQ1V;",
       "type": "code",
       "mnemonic": "ldy",
-      "operand": "#<(irq2v_extended_entry)",
+      "operand": "#<(irq1v_extended_entry)",
       "expr": {
-        "text": "<(irq2v_extended_entry)",
+        "text": "<(irq1v_extended_entry)",
         "tree": {
           "op": "lowbyte",
           "operand": {
-            "sym": "irq2v_extended_entry"
+            "sym": "irq1v_extended_entry"
           }
         }
       }
@@ -7409,13 +7409,13 @@
       "comment_inline": "...",
       "type": "code",
       "mnemonic": "lda",
-      "operand": "#>(irq2v_extended_entry)",
+      "operand": "#>(irq1v_extended_entry)",
       "expr": {
-        "text": ">(irq2v_extended_entry)",
+        "text": ">(irq1v_extended_entry)",
         "tree": {
           "op": "highbyte",
           "operand": {
-            "sym": "irq2v_extended_entry"
+            "sym": "irq1v_extended_entry"
           }
         }
       }
@@ -7538,7 +7538,7 @@
         169,
         37
       ],
-      "comment_inline": "Table entry for IRQ2V: address of irq_handler",
+      "comment_inline": "Table entry for IRQ1V: address of irq_handler",
       "type": "code",
       "mnemonic": "lda",
       "operand": "#<(irq_handler)",

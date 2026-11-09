@@ -3,8 +3,23 @@
     "name": "Acorn Master Compact Mouse Driver (PMFS)",
     "description": "An annotated disassembly of PMFS, the pointer and mouse driver on the Acorn BBC Master Compact Welcome disc. PMFS is a 65C02 sideways ROM image, loaded into sideways RAM, that moves a software pointer from a quadrature mouse or trackerball, an analogue or digital joystick, or the cursor keys, and reports its position through ADVAL. MOS 5 has no mouse support of its own, so PMFS is the Master Compact's mouse driver, and the interface it presents is the one Welcome-era software expects. PMFS is (C) 1986 PMF; the annotations and disassembly scripts here are (C) 2026 Acornaeology.",
     "glossary": "GLOSSARY.md",
-    "versions": ["136"],
-    "analyses": [],
+    "versions": [
+        "136"
+    ],
+    "analyses": [
+        {
+            "label": "The Master Compact pointer driver interface: a specification",
+            "url": "docs/analysis/pointer-driver-interface.md",
+            "icon": "doc",
+            "note": "A formal definition of the interface PMFS presents to software (star commands, ADVAL(5)-(9), OSBYTE &A3,&F3, buttons as keys, coordinates and the pointer display), written so that drivers for other pointing hardware can be compatible with it, with PMFS's defects listed separately."
+        },
+        {
+            "label": "How PMFS works",
+            "url": "docs/analysis/how-pmfs-works.md",
+            "icon": "doc",
+            "note": "The driver's internal design: running from sideways RAM with its workspace in its own bank, reaching BYTEV and IRQ1V through the Master's extended vectors, the workspace exchange, reading a quadrature mouse through the User VIA, and drawing a software pointer with pre-shifted images."
+        }
+    ],
     "references": [
         {
             "label": "Stardot thread: Master Compact Welcome disc",
@@ -19,6 +34,13 @@
             "category": "related",
             "icon": "chip",
             "note": "The Master Compact's MOS 5.00, whose joystick, ADVAL and User VIA handling PMFS builds on."
+        },
+        {
+            "label": "The Master Compact Welcome disc image",
+            "url": "versions/pmfs-136/BBC_Master_Compact_Welcome_Disc.adl",
+            "category": "download",
+            "icon": "disc",
+            "note": "The ADFS disc image from which the PMFS ROM image is extracted ($.WIMPS.R.PMFS)."
         }
     ]
 }

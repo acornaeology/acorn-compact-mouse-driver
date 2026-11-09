@@ -61,11 +61,11 @@ d.label(0xFFF4, 'osbyte', group='os_entry_points',
         "address (&A8) and the TAB key's code (&DB); it sets the cursor-key "
         "behaviour (&04, &E2), the ROM polling semaphore (&16, &17) and "
         "inserts keys into the keyboard buffer (&99).")
-d.label(0xFF06, 'irq2v_extended_entry', group='os_entry_points',
-        description="Extended vector entry point for vector 2 (IRQ2V). Calling it "
-        "pages in the ROM recorded in entry 2 of the extended vector table and "
-        "jumps to the address held there. PMFS takes over this entry to get "
-        "from its IRQ1V trampoline into the ROM.")
+d.label(0xFF06, 'irq1v_extended_entry', group='os_entry_points',
+        description="Extended vector entry point for vector 2 (IRQ1V). Calling it "
+        "pages in the ROM recorded in entry 2 of the extended vector table, "
+        "calls the address held there, and pages the previous ROM back in. "
+        "PMFS's IRQ1V trampoline calls it to run irq_handler.")
 d.label(0xFF0F, 'bytev_extended_entry', group='os_entry_points',
         description="Extended vector entry point for vector 5 (BYTEV). PMFS points "
         "BYTEV here, and puts its OSBYTE handler in entry 5 of the extended "
@@ -91,7 +91,7 @@ d.label(0x0D97, 'saved_bytev', group='os_workspace', access='rw', length=2,
         "the extended vector table, used by PMFS without any claim.")
 d.label(0x0D99, 'irq1v_trampoline', group='os_workspace', access='w', length=6,
         description="Six bytes of code built by the driver when it is turned on: "
-        "JSR irq2v_extended_entry : JMP old_irq1v_handler, where the JMP's "
+        "JSR irq1v_extended_entry : JMP old_irq1v_handler, where the JMP's "
         "operand is saved_irq1v. IRQ1V points "
         "here, so each interrupt first pages in PMFS and runs irq_handler, "
         "then continues to the previous IRQ1V handler.")
@@ -315,7 +315,7 @@ d.constant(0xDC, 'err_bad_number')
 d.constant(0x0D, 'key_return')
 d.constant(0xC0, 'key_right_button')
 d.constant(0x13, 'vdu_set_palette')
-d.constant(0x06, 'ext_vector_offset_irq2v')
+d.constant(0x06, 'ext_vector_offset_irq1v')
 d.constant(0x0F, 'ext_vector_offset_bytev')
 d.constant(0x20, 'opcode_jsr')
 d.constant(0x4C, 'opcode_jmp')
@@ -973,8 +973,14 @@ If the driver is off, it is turned on:
 - BYTEV is pointed at the extended vector entry for BYTEV, and the
   extended vector table entry at bytev_handler in this ROM;
 - IRQ1V is pointed at irq1v_trampoline, which is built here, and the
-  extended vector table entry for IRQ2V is pointed at irq_handler in this
-  ROM. The MOS's own use of that entry is overwritten.
+  extended vector table entry for IRQ1V is pointed at irq_handler in this
+  ROM. IRQ1V does not point at that entry itself: the trampoline calls it,
+  so that when irq_handler returns, the previous ROM is paged back in and
+  the trampoline continues to the old IRQ1V handler.
+
+In both cases the low byte of the extended vector entry point (&0F, &06) is
+also the offset of the vector's entry in the table, three times the vector
+number, so one register load serves for both.
 
 The pointer is not shown; that takes *POINTER.""")
 cm(0x82BD, 'Horizontal speed back to the start')
@@ -1060,11 +1066,11 @@ cm(0x835B, '...')
 cm(0x835E, 'Build the trampoline: JSR...')
 d.expr(0x835F, 'opcode_jsr')
 cm(0x8360, '...')
-cm(0x8363, '&FF06, the extended vector entry for IRQ2V;')
-d.expr(0x8364, lo(sym('irq2v_extended_entry')))
+cm(0x8363, '&FF06, the extended vector entry for IRQ1V;')
+d.expr(0x8364, lo(sym('irq1v_extended_entry')))
 cm(0x8365, '&06 is also its offset in the table')
 cm(0x8368, '...')
-d.expr(0x8369, hi(sym('irq2v_extended_entry')))
+d.expr(0x8369, hi(sym('irq1v_extended_entry')))
 cm(0x836A, '...')
 cm(0x836D, 'then JMP (to the old IRQ1V handler)')
 d.expr(0x836E, 'opcode_jmp')
@@ -1075,7 +1081,7 @@ cm(0x8374, '...')
 cm(0x8377, '...')
 d.expr(0x8378, hi(sym('irq1v_trampoline')))
 cm(0x8379, '...')
-cm(0x837C, 'Table entry for IRQ2V: address of irq_handler')
+cm(0x837C, 'Table entry for IRQ1V: address of irq_handler')
 d.expr(0x837D, lo(sym('irq_handler')))
 cm(0x837E, '...')
 cm(0x8380, '...')
@@ -2002,7 +2008,7 @@ cm(0x8823, 'Always taken: return A=&80')
 d.subroutine(0x8825, 'irq_handler',
     title='Interrupt handler: mouse movement',
     description="""Reached on every interrupt while the driver is on: IRQ1V points at
-irq1v_trampoline, whose JSR to the IRQ2V extended vector entry pages in
+irq1v_trampoline, whose JSR to the IRQ1V extended vector entry pages in
 this ROM and calls here, and whose JMP then goes on to the previous IRQ1V
 handler. So the interrupt is never claimed; the MOS handles it too.
 

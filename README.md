@@ -53,6 +53,8 @@ beebasm -i versions/pmfs-136/output/pmfs-136.asm -o pmfs-136.rom
   Disc images of the Master Compact Welcome disc, from which PMFS is extracted.
 - [Tom Seddon's annotated disassembly of MOS 3.20 and 5.00](https://github.com/tom-seddon/acorn_mos_disassembly)
   The Master Compact's MOS 5.00, whose joystick, ADVAL and User VIA handling PMFS builds on.
+- [The Master Compact Welcome disc image](versions/pmfs-136/BBC_Master_Compact_Welcome_Disc.adl)
+  The ADFS disc image from which the PMFS ROM image is extracted ($.WIMPS.R.PMFS).
 
 ## Credits
 
