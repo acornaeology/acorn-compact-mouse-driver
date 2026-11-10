@@ -36,6 +36,8 @@ Terms used in the PMFS disassembly and its articles: the Master Compact and MOS 
 **PMFS**
 : The pointer and mouse driver on the Master Compact Welcome disc, `$.WIMPS.R.PMFS`, "PMFS 136 (C)1986 PMF". What the name stands for is not known.
 
+  PMF has been identified, by @acheton1984, as Paul Fellows, who ran Acornsoft's languages group and led the team that wrote Arthur. The ROM also holds the initials JPG, whose owner is not known. An 8 KB build is on the Welcome disc titled "Welcome 1.03C Iss4"; later Welcome discs, and the Econet Level 4 File Server supplementary discs, carry a 6 KB build with the same version number.
+
 **Driver on / off**
 : On: PMFS has claimed BYTEV and IRQ1V and is polling. Turned on by any device command, off by a device command with the argument 0.
 

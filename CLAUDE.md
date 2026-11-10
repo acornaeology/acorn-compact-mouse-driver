@@ -37,7 +37,8 @@ uv run generate_readme.py          # after changing acornaeology.json, rom.json 
 - CPU: 65C02 (`cpu="65c02"`). PMFS uses STZ, PHX, PHY and BRA.
 - Header: no language entry; service entry `JMP &801E`; ROM type &82; binary version 1.
 - The ROM keeps its workspace inside its own bank at &9000 upwards, so it only works from sideways RAM.
-- A 6 KB build of PMFS (MD5 `8826f28b3575e9481944528ebf09893c`) exists on other Compact disc images (tbi103-2 and others, see `docs/notes/README.md`). It is not on this Welcome disc and is not disassembled here.
+- The disc is titled "Welcome 1.03C Iss4" (release B in @acheton1984's scheme on stardot thread t=33348; releases A and B have the 8 KB build). It is byte-identical to acorn.huininga.nl's "originals" image, and its files are identical to VectorEyes's flux capture of a physical disc, plus three files the desktop writes (`$.WIMPS.Index1ADDR`, `Index1adre`, `Scratch`). The capture's side 1 sector IDs carry head 0: convert it with Greaseweazle and a diskdef with `h = 0`.
+- A 6 KB build of PMFS 136 (MD5 `8826f28b3575e9481944528ebf09893c`) is on later Welcome discs and in `$.Comp_Wel.WIMPS.R` on the Econet Level 4 File Server supplementary discs, issues 1 and 2 (acorn.huininga.nl originals). It is not disassembled here yet. Its loader there probes for SPRITER with OSBYTE &A3,&F2 (SPRITER's, not PMFS's) and loads with `*SRWRITE`.
 - The rest of the Welcome disc (including SPRITER, Acorn's separate Sprite ROM) is out of scope.
 
 ## Layout
@@ -59,7 +60,7 @@ The sibling [acornaeology.github.io](https://github.com/acornaeology/acornaeolog
 - Inline comments describe intent in domain terms (the pointer, the mouse, device mode, buttons), never a paraphrase of the mnemonic.
 - Published text describes the program as it is; no history of the disassembly.
 - Out-of-ROM labels (OS entry points, vectors, hardware registers, PMFS's own workspace at &9000) carry `group=`/`description=`/`access=`/`length=` so they populate the memory-map page.
-- Do not identify "PMF" or "JPG" in the listing; the ROM shows only the initials.
+- PMF is Paul Fellows, as identified by @acheton1984 (credit him by that name). JPG is unknown; don't guess.
 
 ## Key technical context
 
@@ -72,4 +73,4 @@ The sibling [acornaeology.github.io](https://github.com/acornaeology/acornaeolog
 
 - Behaviour claims are from reading the code; none has yet been confirmed in an emulator. b2 (`~/Code/b2`) has a Master Compact config and an HTTP API on port 48075 (reset, paste, peek, poke), but requests timed out when tried; worth retrying to confirm the defects listed in the interface specification (section 12), especially the reset defect and the &90 corruption.
 - Why the state is exchanged between &9000 and &9440 rather than used in place.
-- What PMFS, PMF and JPG stand for.
+- What PMFS stands for, and who JPG is.

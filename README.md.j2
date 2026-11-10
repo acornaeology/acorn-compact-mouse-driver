@@ -28,7 +28,9 @@ The analysis surface around dasmos (verify, lint, audit, cfg, comments, address 
 
 ## Provenance
 
-The ROM image is the file `$.WIMPS.R.PMFS` on the Master Compact Welcome disc, a copy of which is kept beside it in `versions/pmfs-136/`. To re-extract it from the disc image and check it against the committed copy:
+The ROM image is the file `$.WIMPS.R.PMFS` on the Master Compact Welcome disc titled "Welcome 1.03C Iss4", a copy of which is kept beside it in `versions/pmfs-136/`. The disc image is byte-identical to the one in the [acorn.huininga.nl archive of original discs](https://acorn.huininga.nl/pub/disks/originals/Acorn/Master%20Compact%20Welcome%20Disc/). Every file on it is identical to [VectorEyes's flux capture](https://stardot.org.uk/forums/viewtopic.php?p=489005#p489005) of a physical disc with the same title, which lacks only three files the Welcome desktop writes in use (`$.WIMPS.Index1ADDR`, `$.WIMPS.Index1adre` and `$.WIMPS.Scratch`).
+
+Later Welcome discs, and the Econet Level 4 File Server supplementary discs, carry a 6 KB build of PMFS 136 (MD5 `8826f28b3575e9481944528ebf09893c`) instead, which is not disassembled here. To re-extract it from the disc image and check it against the committed copy:
 
 ```sh
 uv run python tools/extract_rom.py

@@ -1,7 +1,7 @@
 {
     "slug": "acorn-compact-mouse-driver",
     "name": "Acorn Master Compact Mouse Driver (PMFS)",
-    "description": "An annotated disassembly of PMFS, the pointer and mouse driver on the Acorn BBC Master Compact Welcome disc. PMFS is a 65C02 sideways ROM image, loaded into sideways RAM, that moves a software pointer from a quadrature mouse or trackerball, an analogue or digital joystick, or the cursor keys, and reports its position through ADVAL. MOS 5 has no mouse support of its own, so PMFS is the Master Compact's mouse driver, and the interface it presents is the one Welcome-era software expects. PMFS is (C) 1986 PMF; the annotations and disassembly scripts here are (C) 2026 Acornaeology.",
+    "description": "An annotated disassembly of PMFS, the pointer and mouse driver on the Acorn BBC Master Compact Welcome disc. PMFS is a 65C02 sideways ROM image, loaded into sideways RAM, that moves a software pointer from a quadrature mouse or trackerball, an analogue or digital joystick, or the cursor keys, and reports its position through ADVAL. MOS 5 has no mouse support of its own, so PMFS is the Master Compact's mouse driver, and the interface it presents is the one Welcome-era software expects. PMFS is (C) 1986 PMF, identified as Paul Fellows; the annotations and disassembly scripts here are (C) 2026 Acornaeology.",
     "glossary": "GLOSSARY.md",
     "versions": [
         "136"
@@ -22,18 +22,90 @@
     ],
     "references": [
         {
-            "label": "Stardot thread: Master Compact Welcome disc",
-            "url": "https://stardot.org.uk/forums/viewtopic.php?t=33348",
-            "category": "related",
-            "icon": "chat",
-            "note": "Disc images of the Master Compact Welcome disc, from which PMFS is extracted."
+            "id": "mos",
+            "label": "Tom Seddon's annotated disassembly of the Master MOS",
+            "url": "https://github.com/tom-seddon/acorn_mos_disassembly",
+            "category": "source",
+            "icon": "chip",
+            "note": "The Master Compact's MOS 5.00, whose service calls, extended vectors, joystick handling and *SRLOAD PMFS relies on."
         },
         {
-            "label": "Tom Seddon's annotated disassembly of MOS 3.20 and 5.00",
-            "url": "https://github.com/tom-seddon/acorn_mos_disassembly",
+            "id": "dabs-mos",
+            "label": "David Atherton, Master Operating System: A Dabhand Guide (Dabs Press, 1987), remade edition",
+            "url": "https://github.com/acheton1984/AcornDocsRemade/blob/main/DabsMOS/dabs%20mos%20remade%20draft%201c.pdf",
+            "category": "source",
+            "icon": "book",
+            "note": "Reserves &0D92-&0D9E for a trackerball or other input device (p205), where PMFS keeps its saved vectors and IRQ1V routine, and allows a mouse driver to use it (p79)."
+        },
+        {
+            "label": "The Master Compact Welcome disc image (acorn.huininga.nl)",
+            "url": "https://acorn.huininga.nl/pub/disks/originals/Acorn/Master%20Compact%20Welcome%20Disc/",
+            "category": "source",
+            "icon": "disc",
+            "note": "Disc title \"Welcome 1.03C Iss4\". Byte-identical to the copy kept in this repository, from which the PMFS ROM image is extracted."
+        },
+        {
+            "label": "VectorEyes's flux capture of a Master Compact Welcome disc",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?p=489005#p489005",
+            "category": "source",
+            "icon": "disc",
+            "note": "A capture of a physical \"Welcome, Application and Utilities\" disc titled \"Welcome 1.03C Iss4\". Every file on it, PMFS included, is identical to the image used here, which also holds three files written by the Welcome desktop."
+        },
+        {
+            "label": "Econet Level 4 File Server supplementary discs, issues 1 and 2",
+            "url": "https://acorn.huininga.nl/pub/disks/originals/Acorn/",
+            "category": "related",
+            "icon": "disc",
+            "note": "Their $.Comp_Wel directory holds the later 6 KB build of PMFS 136 (MD5 8826f28b3575e9481944528ebf09893c), not disassembled here."
+        },
+        {
+            "label": "PMFS in the ROM Library",
+            "url": "https://tobylobster.github.io/rom_library/?md5=8826f28b3575e9481944528ebf09893c",
             "category": "related",
             "icon": "chip",
-            "note": "The Master Compact's MOS 5.00, whose joystick, ADVAL and User VIA handling PMFS builds on."
+            "note": "The ROM Library's entry for PMFS, with the 6 KB and 8 KB builds and links to Acorn User articles of December 1986 and April 1987."
+        },
+        {
+            "label": "Paul Fellows at Binary Dinosaurs",
+            "url": "https://binarydinosaurs.co.uk/Museum/Acorn/fellows.php",
+            "category": "related",
+            "icon": "doc",
+            "note": "Paul Fellows ran Acornsoft's languages group and led the team that wrote Arthur. He was identified as the PMF of PMFS's copyright string by @acheton1984."
+        },
+        {
+            "label": "Marconi trackerball ROM in the ROM Library",
+            "url": "https://tobylobster.github.io/rom_library/?md5=f1bd3ed57e9d6b5380fffe4b91995c6e",
+            "category": "related",
+            "icon": "chip",
+            "note": "An earlier Acorn pointer driver, (C) Acorn 1985, supplied with the Marconi trackerball."
+        },
+        {
+            "label": "Domesday VFS ROMs in the ROM Library",
+            "url": "https://tobylobster.github.io/rom_library/?search=vfs",
+            "category": "related",
+            "icon": "chip",
+            "note": "The Video Filing System of the Domesday (Master AIV) system, (C) 1986 Acorn. Master Operating System: A Dabhand Guide (p79) notes that the Master AIV system includes code to drive the Marconi trackerball."
+        },
+        {
+            "label": "Stardot: the Master Compact Welcome disc versions",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?t=33348",
+            "category": "discussion",
+            "icon": "chat",
+            "note": "Physical Welcome discs, their titles and releases."
+        },
+        {
+            "label": "Stardot: Acorn's letters about PMFS and SPRITER",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?p=24125#p24125",
+            "category": "discussion",
+            "icon": "chat",
+            "note": "BeebMaster's 1992 letters from Acorn, which could provide no documentation for the PMFS and SPRITER ROMs; see also https://stardot.org.uk/forums/viewtopic.php?p=414279#p414279."
+        },
+        {
+            "label": "Stardot: PMFS's commands",
+            "url": "https://stardot.org.uk/forums/viewtopic.php?p=351023#p351023",
+            "category": "discussion",
+            "icon": "chat",
+            "note": "BeebMaster's list of the PMFS star commands, and the Welcome menu items that use them."
         },
         {
             "label": "The Master Compact Welcome disc image",

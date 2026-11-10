@@ -3,7 +3,7 @@
     "size": 8192,
     "md5": "6f95ee5f69b7273c7bf0b932ebdb975f",
     "sha256": "68bec3b3effa3d8180791e278279556ed4dd801db2e63436547a42108329c1f9",
-    "notes": "The file $.WIMPS.R.PMFS (load and execution address &FFFF8000, 8,192 bytes) on the Acorn BBC Master Compact Welcome disc, extracted with oaknut-disc. A 65C02 sideways ROM image that the Welcome disc's $.Loader puts in sideways RAM bank 5 with *SRLOAD. The ROM identifies itself as PMFS 136, (C)1986 PMF.",
+    "notes": "The file $.WIMPS.R.PMFS (load and execution address &FFFF8000, 8,192 bytes) on the Acorn BBC Master Compact Welcome disc, extracted with oaknut-disc. A 65C02 sideways ROM image that the Welcome disc's $.Loader puts in sideways RAM bank 5 with *SRLOAD. The ROM identifies itself as PMFS 136, (C)1986 PMF. The disc is titled \"Welcome 1.03C Iss4\". Later Welcome discs carry a 6 KB build of PMFS 136 instead.",
     "memory_map_groups": {
         "zero_page": "Zero page",
         "os_vectors": "MOS vectors",
@@ -20,10 +20,10 @@
             "icon": "github"
         },
         {
-            "label": "Stardot thread: Master Compact Welcome disc",
-            "url": "https://stardot.org.uk/forums/viewtopic.php?t=33348",
-            "icon": "chat",
-            "category": "discussion"
+            "label": "PMFS 136 (8 KB) in the ROM Library",
+            "url": "https://tobylobster.github.io/rom_library/?md5=6f95ee5f69b7273c7bf0b932ebdb975f",
+            "icon": "chip",
+            "category": "rom-image"
         }
     ]
 }

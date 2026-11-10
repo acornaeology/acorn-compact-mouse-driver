@@ -982,7 +982,7 @@
       "addr": 36755,
       "name": "initials",
       "title": "Initials",
-      "description": "Text at the end of the code and data. Not referred to by the code.",
+      "description": "Two sets of initials, JPG and PMF, after the code and data. Nothing\nrefers to them. PMF also appears in the ROM's copyright string, (C)1986 PMF,\nand has been identified as Paul Fellows, who led Acornsoft's languages group\nand then the team that wrote Arthur. Who JPG is is not known.",
       "align": "before_label"
     },
     {

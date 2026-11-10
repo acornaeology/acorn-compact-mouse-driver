@@ -3149,7 +3149,10 @@ cpu 1
 ; ***************************************************************************************
 ; Initials
 ;
-; Text at the end of the code and data. Not referred to by the code.
+; Two sets of initials, JPG and PMF, after the code and data. Nothing refers to them. PMF
+; also appears in the ROM's copyright string, (C)1986 PMF, and has been identified as
+; Paul Fellows, who led Acornsoft's languages group and then the team that wrote Arthur.
+; Who JPG is is not known.
 .initials
     equs "JPG,PMF"                      ; Not used by the code
 ; ***************************************************************************************

@@ -2915,7 +2915,10 @@ for _base, _kind in ((0x8D13, 'image'), (0x8E53, 'mask')):
 
 d.label(0x8F93, 'initials')
 d.banner(0x8F93, title='Initials',
-    description="""Text at the end of the code and data. Not referred to by the code.""")
+    description="""Two sets of initials, JPG and PMF, after the code and data. Nothing
+refers to them. PMF also appears in the ROM's copyright string, (C)1986 PMF,
+and has been identified as Paul Fellows, who led Acornsoft's languages group
+and then the team that wrote Arthur. Who JPG is is not known.""")
 d.string(0x8F93, 7)
 cm(0x8F93, 'Not used by the code')
 
