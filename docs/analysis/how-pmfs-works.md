@@ -67,7 +67,9 @@ page &0D, [`irq1v_trampoline`](label:irq1v_trampoline@136):
 &0D9C  JMP old_irq1v    ; the operand is saved_irq1v
 ```
 
-It points IRQ1V at the trampoline, and sets entry 2 of the extended vector
+The trampoline and the saved BYTEV (&0D97) lie in &0D92-&0D9E, the part of
+page &0D that the Master reserves for a trackerball or other input device
+driver. PMFS points IRQ1V at the trampoline, and sets entry 2 of the extended vector
 table to [`irq_handler`](label:irq_handler@136) in PMFS. Every interrupt now pages PMFS in and calls
 [`irq_handler`](label:irq_handler@136); when it returns, the MOS pages the previous ROM back in, and
 the trampoline continues to the old handler.

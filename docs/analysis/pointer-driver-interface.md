@@ -14,6 +14,9 @@
 > implements it. Statements about the Welcome software were read from its
 > BASIC programs on the same disc. Statements about MOS 5.00 were read from
 > [Tom Seddon's annotated MOS disassembly](https://github.com/tom-seddon/acorn_mos_disassembly).
+> The reserved area of page &0D is from David Atherton's *Master Operating
+> System: A Dabhand Guide* (Dabs Press, 1987), pp79 and 205, in its
+> [remade edition](https://github.com/acheton1984/AcornDocsRemade/blob/main/DabsMOS/dabs%20mos%20remade%20draft%201c.pdf).
 
 ---
 
@@ -475,6 +478,14 @@ bank 5 and makes the MOS call it without a BREAK:
 *DIGITAL
 ```
 
+The second line enters bank 5 in the MOS's ROM type table, which the MOS
+otherwise does only after a BREAK. MOS 5 can do this itself. A Master
+Compact application note, quoted in the MOS disassembly, says: "A facility
+to load an SRAM image and update the MOS ROM type table has been added. An
+"I" should be added to the *SRLOAD command." MOS 5 accepts the `I` before
+the `Q` (`*SRLOAD PMFS 8000 5 I Q`). The Welcome disc's loader does not use
+it.
+
 PMFS keeps its workspace in RAM in its own bank, at &9000-&946F, so it **only
 works from sideways RAM**. It writes &91 to its entry in the MOS's private
 workspace table (&0DF0+ROM number) on every service call.
@@ -527,6 +538,18 @@ previous IRQ1V handler runs.
 | &A8-&AB | Used while a command runs |
 | &0D97-&0D9E | Saved vectors and the IRQ1V routine |
 | &9000-&946F in PMFS's bank | Workspace, pointer images, screen under the pointer |
+
+**10.5.1** Zero page &84-&8F is part of the current language's workspace
+(&00-&8F). BASIC leaves &70-&8F to the user, but another language may use
+it. PMFS copies &84-&90 into its own workspace when it is entered and copies
+them back when it leaves, so the language's values survive a call to PMFS,
+except for &90 (section 12, defect 2).
+
+**10.5.2** &0D97-&0D9E lies within &0D92-&0D9E, which *Master Operating
+System: A Dabhand Guide* lists as "Reserved for use by Trackerball / input
+device" on all machines (p205), adding that "if writing code for a mouse it
+is also permissible to use the trackerball reserved space in page &D" (p79).
+PMFS keeps its saved vectors and its IRQ1V routine there.
 
 ### 10.6 Hardware
 
@@ -645,7 +668,15 @@ do this. A driver that does would let software test `(ADVAL(0) AND 7)<>0` for
 any button, as the Welcome software does, on hardware where the left button
 is not wired to the fire line.
 
-### 13.4 Running from ROM
+### 13.4 Memory
+
+A compatible driver **SHOULD** keep its page &0D variables within &0D92-&0D9E,
+the area reserved for an input device driver (10.5.2), and **SHOULD NOT** use
+the language's zero page (&00-&8F) except as PMFS does, saving and restoring
+it around each entry. Zero page outside &00-&8F belongs to the MOS and
+filing systems.
+
+### 13.5 Running from ROM
 
 PMFS's workspace is in its own bank, which ties it to sideways RAM. A driver
 that claims private workspace through the normal service calls could also
@@ -653,11 +684,13 @@ run from ROM.
 
 ## 14. Open questions
 
-- What PMFS stands for, and who "PMF" and "JPG" (the initials in the ROM) are.
+- What PMFS stands for, and who "JPG" (the other initials in the ROM) is.
+  "PMF" has been identified as Paul Fellows.
 - The intended use of `*TMAX`, whose values nothing in PMFS reads.
 - The intended use of the &C0 character sent for the right mouse button: no
   BASIC program on the Welcome disc tests for it.
 - Why PMFS keeps its state at &9440 and exchanges it into &9000 while it
   runs, instead of using &9000 directly.
-- How PMFS's behaviour differs in the 6 KB build found on other Compact disc
-  images (see `docs/notes/`).
+- How PMFS's behaviour differs in the 6 KB build on later Compact Welcome
+  discs and on the Econet Level 4 File Server supplementary discs
+  (`$.Comp_Wel.WIMPS.R.PMFS`, MD5 `8826f28b3575e9481944528ebf09893c`).
